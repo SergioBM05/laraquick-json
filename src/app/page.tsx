@@ -16,7 +16,7 @@ export default function Home() {
   const [isSharing, setIsSharing] = useState(false);
   const [shareUrl, setShareUrl] = useState<string | null>(null);
 
-  // --- LÓGICA MODO OSCURO (CORREGIDA) ---
+  // --- LÓGICA MODO OSCURO ---
   useEffect(() => {
     if (darkMode) {
       document.documentElement.classList.add('dark');
@@ -41,6 +41,18 @@ export default function Home() {
       setError(e.message);
     }
   }, [json]);
+
+  // --- FUNCIÓN DE COMANDO DINÁMICO (NUEVO) ---
+  const getDynamicCommand = () => {
+    const modelName = tableName.charAt(0).toUpperCase() + tableName.slice(1).replace(/s$/, '');
+    switch (activeTab) {
+      case 'migration': return `make:migration create_${tableName || 'table'}_table`;
+      case 'model': return `make:model ${modelName}`;
+      case 'factory': return `make:factory ${modelName}Factory --model=${modelName}`;
+      case 'validation': return `make:request Store${modelName}Request`;
+      default: return `make:model ${modelName} -mfs`;
+    }
+  };
 
   const generateValidation = (jsonStr: string) => {
     try {
@@ -159,7 +171,7 @@ export default function Home() {
           </p>
         </header>
 
-        {/* EXAMPLES CON TEXTO LEGIBLE */}
+        {/* EXAMPLES */}
         <div className="flex gap-2 mb-4 justify-center items-center">
           <span className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest mr-2">Try examples:</span>
           {['user', 'blog', 'product'].map((type) => (
@@ -193,11 +205,17 @@ export default function Home() {
               {error && <div className="mt-4 p-3 bg-red-50 dark:bg-red-900/40 text-red-600 dark:text-red-300 text-xs font-mono rounded-lg border border-red-100 dark:border-red-900 italic">{error}</div>}
             </div>
 
+            {/* COMANDO ARTISAN DINÁMICO (IMPLEMENTADO) */}
             <div className="bg-slate-900 rounded-2xl p-5 border border-slate-800 shadow-xl">
               <div className="flex justify-between items-center mb-3">
-                <span className="text-[10px] font-black text-indigo-400 uppercase tracking-widest">Artisan Quick Command</span>
+                <span className="text-[10px] font-black text-indigo-400 uppercase tracking-widest">
+                  Artisan {activeTab} Command
+                </span>
                 <button
-                  onClick={() => { navigator.clipboard.writeText(`php artisan make:model ${className} -mfs`); alert("Command copied!"); }}
+                  onClick={() => { 
+                    navigator.clipboard.writeText(`php artisan ${getDynamicCommand()}`); 
+                    alert("Command copied!"); 
+                  }}
                   className="text-[10px] text-slate-400 hover:text-white uppercase font-bold transition"
                 >
                   Copy
@@ -205,7 +223,7 @@ export default function Home() {
               </div>
               <code className="text-sm sm:text-base block">
                 <span className="text-emerald-400 font-bold">php artisan</span>
-                <span className="text-slate-100 ml-2 italic text-sm">make:model {className} -mfs</span>
+                <span className="text-slate-100 ml-2 italic text-sm">{getDynamicCommand()}</span>
               </code>
             </div>
           </div>
@@ -213,7 +231,11 @@ export default function Home() {
           <div className="rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 overflow-hidden flex flex-col bg-white dark:bg-slate-900">
             <nav className="flex bg-slate-50 dark:bg-slate-800 border-b dark:border-slate-800">
               {['migration', 'model', 'factory', 'validation'].map((tab) => (
-                <button key={tab} onClick={() => setActiveTab(tab)} className={`flex-1 py-4 text-[10px] font-black uppercase tracking-widest transition-all ${activeTab === tab ? 'bg-white dark:bg-slate-900 text-indigo-600 border-b-2 border-indigo-600' : 'text-slate-400 dark:text-slate-500'}`}>
+                <button 
+                  key={tab} 
+                  onClick={() => setActiveTab(tab)} 
+                  className={`flex-1 py-4 text-[10px] font-black uppercase tracking-widest transition-all ${activeTab === tab ? 'bg-white dark:bg-slate-900 text-indigo-600 border-b-2 border-indigo-600' : 'text-slate-400 dark:text-slate-500'}`}
+                >
                   {tab}
                 </button>
               ))}
@@ -222,7 +244,7 @@ export default function Home() {
               <CodeEditor value={results[activeTab]} onChange={() => { }} language="php" readOnly={true} />
               {!error && (
                 <button onClick={() => { navigator.clipboard.writeText(results[activeTab]); alert("Copied!"); }} className="absolute bottom-6 right-6 bg-indigo-600 text-white px-6 py-2 rounded-xl font-bold text-xs shadow-xl active:scale-95 transition">
-                  COPY CODE
+                  COPY {activeTab.toUpperCase()}
                 </button>
               )}
             </div>
@@ -248,7 +270,7 @@ export default function Home() {
           </div>
         </div>
 
-        {/* SECCIÓN SEO CON CONTRASTE ALTO */}
+        {/* SECCIONES SEO Y COMANDOS (SE MANTIENEN IGUAL) */}
         <section className="mt-20 grid grid-cols-1 md:grid-cols-3 gap-10 border-t dark:border-slate-800 pt-10">
           <div className="text-center">
             <h3 className="font-bold text-slate-800 dark:text-slate-100 mb-2">⚡ Instant Conversion</h3>
@@ -264,7 +286,6 @@ export default function Home() {
           </div>
         </section>
 
-        {/* COMANDOS LARAVEL - LEGIBILIDAD MEJORADA */}
         <section className="mt-20 max-w-4xl mx-auto prose dark:prose-invert prose-slate">
           <h2 className="text-3xl font-black text-slate-900 dark:text-white mb-6">Laravel Essential Commands</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 not-prose">
@@ -285,15 +306,10 @@ export default function Home() {
             ))}
           </div>
           <div className="mt-12 p-6 bg-indigo-50 dark:bg-indigo-900/20 rounded-2xl border border-indigo-100 dark:border-indigo-800">
-
             <h3 className="text-lg font-bold text-indigo-900 dark:text-indigo-300 mb-2">Why use LaraQuick?</h3>
-
             <p className="text-sm text-indigo-700 dark:text-indigo-400 leading-relaxed">
-
-              Modern web applications require rapid prototyping. LaraQuick follows the <strong>PSR-12 coding standard</strong> and is fully compatible with <strong>Laravel 10 and 11</strong>. By using our tool, you ensure that your code is clean, consistent, and ready for production, reducing the risk of syntax errors in your database schemas.
-
+              Modern web applications require rapid prototyping. LaraQuick follows the <strong>PSR-12 coding standard</strong> and is fully compatible with <strong>Laravel 10 and 11</strong>.
             </p>
-
           </div>
         </section>
 
