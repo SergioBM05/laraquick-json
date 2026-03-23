@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Script from "next/script"; // 1. Importa esto
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
@@ -15,10 +16,10 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   // 1. Título con la palabra clave al principio (lo más importante)
   title: 'JSON to Laravel Converter | Migrations, Models & Factories',
-  
+
   // 2. Descripción con palabras clave secundarias
   description: 'The fastest online tool to convert JSON to Laravel Migrations, Eloquent Models, and Factories. Speed up your Laravel development with LaraQuick.',
-  
+
   // 3. Keywords (aunque Google ya no las usa tanto, otros buscadores sí)
   keywords: ['JSON to Laravel', 'Laravel Migration Generator', 'JSON to Eloquent', 'Laravel Schema Builder', 'LaraQuick'],
 
@@ -43,7 +44,7 @@ export const metadata: Metadata = {
     locale: 'en_US',
     type: 'website',
   },
-  
+
   // 5. Twitter Card
   twitter: {
     card: 'summary_large_image',
@@ -55,6 +56,15 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className="scroll-smooth">
+      <head>
+        {/* 2. Pega el código de AdSense aquí dentro */}
+        <Script
+          async
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7914564898894869"
+          crossOrigin="anonymous"
+          strategy="afterInteractive" // Esto ayuda a que no ralentice la carga inicial
+        />
+      </head>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         {children}
       </body>
