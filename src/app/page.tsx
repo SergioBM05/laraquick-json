@@ -371,6 +371,20 @@ export default function Home() {
           </div>
         </section>
 
+        <section className="mt-24 max-w-4xl mx-auto px-4 pb-20">
+          <h2 className="text-2xl font-black mb-8 dark:text-white">Why use our JSON to Laravel Generator?</h2>
+          <div className="grid gap-6 text-sm text-slate-600 dark:text-slate-400">
+            <div>
+              <h3 className="font-bold text-slate-900 dark:text-slate-200 mb-2 italic">How to convert JSON to Laravel Migrations?</h3>
+              <p>Simply paste your JSON object into the editor, define your table name, and our tool will automatically map data types like strings, integers, and booleans to the correct Laravel Schema methods.</p>
+            </div>
+            <div>
+              <h3 className="font-bold text-slate-900 dark:text-slate-200 mb-2 italic">Does it support Laravel 11?</h3>
+              <p>Yes, LaraQuick is fully optimized for Laravel 11, generating clean PSR-12 compliant code for Models, Factories, and Migrations.</p>
+            </div>
+          </div>
+        </section>
+
         {/* FOOTER (RECUPERADO TERMS) */}
         <footer className="mt-20 text-center border-t border-slate-200 dark:border-slate-800 pt-10 pb-10">
           <div className="flex flex-wrap justify-center gap-x-10 gap-y-4 mb-8">
