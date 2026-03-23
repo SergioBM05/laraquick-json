@@ -5,6 +5,13 @@ import { jsonToLaravelMigration, jsonToLaravelModel, jsonToLaravelFactory } from
 import CodeEditor from '@/components/CodeEditor';
 import { useRouter } from 'next/navigation';
 
+
+export const metadata = {
+  title: 'JSON to Laravel Converter | Migrations, Models & Factories',
+  description: 'The fastest way to convert JSON to Laravel Migrations, Models, and Factories. Online tool for Laravel developers to generate Eloquent schemas instantly.',
+  keywords: ['JSON to Laravel', 'Laravel Migration Generator', 'JSON to Eloquent', 'Laravel Schema Builder'],
+};
+
 export default function Home() {
   const [json, setJson] = useState('{\n  "title": "Hello World",\n  "user_id": 1,\n  "is_active": true\n}');
   const [tableName, setTableName] = useState('posts');
@@ -161,8 +168,8 @@ export default function Home() {
           <div className="inline-block bg-indigo-600 text-white text-[10px] font-bold px-3 py-1 rounded-full mb-2 uppercase tracking-widest shadow-sm">
             Laravel Developer Tools
           </div>
-          <h1 className="text-6xl font-black tracking-tighter dark:text-white">
-            LaraQuick <span className="text-indigo-600">JSON</span>
+          <h1 className="text-6xl font-black tracking-tighter  text-indigo-600">
+            JSON <span className="dark:text-white">to Laravel</span>
           </h1>
           <p className="text-xl text-slate-600 dark:text-slate-400 mt-2 font-medium max-w-2xl mx-auto">
             Paste your JSON, get your Laravel Model. <span className="text-indigo-600 underline decoration-2">It's that simple.</span>

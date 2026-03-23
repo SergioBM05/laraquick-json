@@ -5,6 +5,8 @@ import Link from 'next/link';
 import CodeEditor from '@/components/CodeEditor';
 import { jsonToLaravelMigration, jsonToLaravelModel, jsonToLaravelFactory } from '@/utils/converter';
 
+
+
 export default function SharedSchemaPage({ params }: { params: Promise<{ slug: string }> }) {
     const { slug } = use(params); 
     
