@@ -284,6 +284,17 @@ export default function Home() {
               </div>
             ))}
           </div>
+          <div className="mt-12 p-6 bg-indigo-50 dark:bg-indigo-900/20 rounded-2xl border border-indigo-100 dark:border-indigo-800">
+
+            <h3 className="text-lg font-bold text-indigo-900 dark:text-indigo-300 mb-2">Why use LaraQuick?</h3>
+
+            <p className="text-sm text-indigo-700 dark:text-indigo-400 leading-relaxed">
+
+              Modern web applications require rapid prototyping. LaraQuick follows the <strong>PSR-12 coding standard</strong> and is fully compatible with <strong>Laravel 10 and 11</strong>. By using our tool, you ensure that your code is clean, consistent, and ready for production, reducing the risk of syntax errors in your database schemas.
+
+            </p>
+
+          </div>
         </section>
 
         <footer className="mt-20 text-center border-t border-slate-200 dark:border-slate-800 pt-10 pb-10">
