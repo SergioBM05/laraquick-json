@@ -11,7 +11,7 @@ export default function Home() {
   const [activeTab, setActiveTab] = useState('migration');
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
-  
+
   const [isSharing, setIsSharing] = useState(false);
   const [shareUrl, setShareUrl] = useState<string | null>(null);
 
@@ -121,11 +121,11 @@ export default function Home() {
                   <button onClick={handleReset} className="text-[10px] font-black uppercase tracking-widest px-3 py-1 bg-red-50 text-red-600 rounded-md hover:bg-red-600 hover:text-white transition">Reset</button>
                 </div>
               </div>
-              <input 
-                className="w-full p-3 mb-4 border border-slate-200 rounded-xl bg-slate-50 font-mono text-sm outline-none focus:ring-2 focus:ring-indigo-500" 
-                placeholder="Table name (e.g. users)" 
-                value={tableName} 
-                onChange={(e) => setTableName(e.target.value)} 
+              <input
+                className="w-full p-3 mb-4 border border-slate-200 rounded-xl bg-slate-50 font-mono text-sm outline-none focus:ring-2 focus:ring-indigo-500"
+                placeholder="Table name (e.g. users)"
+                value={tableName}
+                onChange={(e) => setTableName(e.target.value)}
               />
               <CodeEditor value={json} onChange={setJson} language="json" />
               {error && <div className="mt-4 p-3 bg-red-50 text-red-600 text-xs font-mono rounded-lg border border-red-100 italic">{error}</div>}
@@ -143,26 +143,25 @@ export default function Home() {
             <div className="grow relative bg-slate-900 min-h-[400px]">
               <CodeEditor value={results[activeTab]} onChange={() => { }} language="php" readOnly={true} />
               {!error && (
-                <button onClick={() => {navigator.clipboard.writeText(results[activeTab]); alert("Copied to clipboard!");}} className="absolute bottom-6 right-6 bg-indigo-600 text-white px-6 py-2 rounded-xl font-bold text-xs shadow-xl active:scale-95 transition">
+                <button onClick={() => { navigator.clipboard.writeText(results[activeTab]); alert("Copied to clipboard!"); }} className="absolute bottom-6 right-6 bg-indigo-600 text-white px-6 py-2 rounded-xl font-bold text-xs shadow-xl active:scale-95 transition">
                   COPY CODE
                 </button>
               )}
             </div>
 
             <div className="p-4 bg-slate-50 border-t space-y-3">
-              <button 
+              <button
                 onClick={handleShare}
                 disabled={isSharing || isInvalid}
-                className={`w-full py-4 text-white font-black uppercase tracking-widest rounded-xl transition-all shadow-lg ${
-                  (isSharing || isInvalid) ? 'bg-slate-300 cursor-not-allowed' : 'bg-emerald-500 hover:bg-emerald-600 active:scale-95'
-                }`}
+                className={`w-full py-4 text-white font-black uppercase tracking-widest rounded-xl transition-all shadow-lg ${(isSharing || isInvalid) ? 'bg-slate-300 cursor-not-allowed' : 'bg-emerald-500 hover:bg-emerald-600 active:scale-95'
+                  }`}
               >
                 {isSharing ? 'Saving...' : '🚀 Save & Share Schema'}
               </button>
 
               {/* RESTAURADO: Botón de Descarga */}
               {!error && (
-                <button 
+                <button
                   onClick={downloadPhpFile}
                   className="w-full py-3 border-2 border-indigo-600 text-indigo-600 font-bold rounded-xl hover:bg-indigo-50 transition uppercase text-xs tracking-widest"
                 >
@@ -175,12 +174,12 @@ export default function Home() {
 
         {shareUrl && (
           <div className="mt-8 p-6 bg-emerald-50 border-2 border-emerald-200 rounded-2xl animate-in fade-in slide-in-from-top-4 duration-500">
-             <p className="text-[11px] font-black text-emerald-700 uppercase tracking-widest mb-3">Public Link Generated:</p>
-             <div className="flex gap-2">
-                <input readOnly value={shareUrl} className="flex-1 bg-white border border-emerald-200 rounded-xl p-3 text-xs font-mono text-emerald-800 outline-none" />
-                <button onClick={() => {navigator.clipboard.writeText(shareUrl); alert("URL Copied!");}} className="bg-emerald-600 text-white px-6 rounded-xl text-xs font-bold">Copy</button>
-                <a href={shareUrl} target="_blank" className="p-3 bg-white border border-emerald-200 text-emerald-600 rounded-xl hover:bg-emerald-100 transition shadow-sm">Preview</a>
-             </div>
+            <p className="text-[11px] font-black text-emerald-700 uppercase tracking-widest mb-3">Public Link Generated:</p>
+            <div className="flex gap-2">
+              <input readOnly value={shareUrl} className="flex-1 bg-white border border-emerald-200 rounded-xl p-3 text-xs font-mono text-emerald-800 outline-none" />
+              <button onClick={() => { navigator.clipboard.writeText(shareUrl); alert("URL Copied!"); }} className="bg-emerald-600 text-white px-6 rounded-xl text-xs font-bold">Copy</button>
+              <a href={shareUrl} target="_blank" className="p-3 bg-white border border-emerald-200 text-emerald-600 rounded-xl hover:bg-emerald-100 transition shadow-sm">Preview</a>
+            </div>
           </div>
         )}
 
@@ -196,6 +195,40 @@ export default function Home() {
           <div className="text-center">
             <h3 className="font-bold text-slate-800 mb-2">🔗 Shareable Schemas</h3>
             <p className="text-sm text-slate-500">Save your structures in the cloud and share them with your team.</p>
+          </div>
+        </section>
+
+        <section className="mt-20 max-w-4xl mx-auto prose prose-slate">
+          <h2 className="text-3xl font-black text-slate-900 mb-6">How to use LaraQuick: The Ultimate JSON to Laravel Guide</h2>
+
+          <p className="text-slate-600 leading-relaxed mb-6">
+            LaraQuick is designed to streamline your development workflow by automating the tedious process of writing Laravel Migrations, Models, and Factories. Instead of manually defining every column, you can simply paste your raw data in JSON format and let our generator do the heavy lifting.
+          </p>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+            <div>
+              <h3 className="text-xl font-bold text-slate-800 mb-3">Common JSON Formatting Errors</h3>
+              <ul className="text-sm text-slate-600 space-y-2 list-disc pl-5">
+                <li><strong>Missing Quotes:</strong> All keys and string values must be wrapped in double quotes (").</li>
+                <li><strong>Trailing Commas:</strong> Ensure the last item in an object or array does not have a comma after it.</li>
+                <li><strong>Nested Objects:</strong> For the best results, use a flat JSON structure for single-table migrations.</li>
+              </ul>
+            </div>
+
+            <div>
+              <h3 className="text-xl font-bold text-slate-800 mb-3">Pro Tips for Developers</h3>
+              <ul className="text-sm text-slate-600 space-y-2 list-disc pl-5">
+                <li><strong>Relationships:</strong> Name your foreign keys ending with <code>_id</code> (e.g., <code>user_id</code>) and we will automatically generate <code>foreignId()-&gt;constrained()</code>.</li>
+                <li><strong>Table Names:</strong> Use plural nouns for table names (e.g., <code>products</code>) to follow Laravel's naming conventions perfectly.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div className="mt-12 p-6 bg-indigo-50 rounded-2xl border border-indigo-100">
+            <h3 className="text-lg font-bold text-indigo-900 mb-2">Why use LaraQuick?</h3>
+            <p className="text-sm text-indigo-700 leading-relaxed">
+              Modern web applications require rapid prototyping. LaraQuick follows the <strong>PSR-12 coding standard</strong> and is fully compatible with <strong>Laravel 10 and 11</strong>. By using our tool, you ensure that your code is clean, consistent, and ready for production, reducing the risk of syntax errors in your database schemas.
+            </p>
           </div>
         </section>
 
