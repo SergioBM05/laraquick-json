@@ -6,12 +6,6 @@ import CodeEditor from '@/components/CodeEditor';
 import { useRouter } from 'next/navigation';
 
 
-export const metadata = {
-  title: 'JSON to Laravel Converter | Migrations, Models & Factories',
-  description: 'The fastest way to convert JSON to Laravel Migrations, Models, and Factories. Online tool for Laravel developers to generate Eloquent schemas instantly.',
-  keywords: ['JSON to Laravel', 'Laravel Migration Generator', 'JSON to Eloquent', 'Laravel Schema Builder'],
-};
-
 export default function Home() {
   const [json, setJson] = useState('{\n  "title": "Hello World",\n  "user_id": 1,\n  "is_active": true\n}');
   const [tableName, setTableName] = useState('posts');

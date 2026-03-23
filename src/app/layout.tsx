@@ -12,28 +12,52 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-export const metadata = {
-  title: 'LaraQuick Tool - JSON to Laravel Converter',
-  description: 'Convert your JSON schemas into Laravel Eloquent models in seconds.',
+export const metadata: Metadata = {
+  // 1. Título con la palabra clave al principio (lo más importante)
+  title: 'JSON to Laravel Converter | Migrations, Models & Factories',
+  
+  // 2. Descripción con palabras clave secundarias
+  description: 'The fastest online tool to convert JSON to Laravel Migrations, Eloquent Models, and Factories. Speed up your Laravel development with LaraQuick.',
+  
+  // 3. Keywords (aunque Google ya no las usa tanto, otros buscadores sí)
+  keywords: ['JSON to Laravel', 'Laravel Migration Generator', 'JSON to Eloquent', 'Laravel Schema Builder', 'LaraQuick'],
+
   verification: {
     google: 'WN6TqtQCdVLQE6j4qWpyOmx5mSxuZ1p5Ytw3QtYpZZM',
   },
+
+  // 4. OpenGraph para que cuando compartas el link en redes se vea profesional
   openGraph: {
-    title: 'LaraQuick Tool',
-    description: 'The ultimate tool for Laravel developers',
+    title: 'LaraQuick | JSON to Laravel Converter',
+    description: 'Generate Laravel code from JSON in seconds. Free developer tool.',
     url: 'https://laraquicktool.com',
     siteName: 'LaraQuick',
+    images: [
+      {
+        url: 'https://laraquicktool.com/og-image.png', // Si tienes una imagen de preview, ponla aquí
+        width: 1200,
+        height: 630,
+        alt: 'LaraQuick Tool Preview',
+      },
+    ],
     locale: 'en_US',
     type: 'website',
   },
+  
+  // 5. Twitter Card
+  twitter: {
+    card: 'summary_large_image',
+    title: 'JSON to Laravel Converter',
+    description: 'Convert JSON to Laravel Migrations & Models instantly.',
+  },
 };
 
-// app/layout.tsx
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className="scroll-smooth"> {/* Asegúrate de que no tenga 'light' fijo */}
-      <body>{children}</body>
+    <html lang="en" className="scroll-smooth">
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+        {children}
+      </body>
     </html>
   );
 }
-
