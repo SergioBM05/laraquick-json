@@ -32,12 +32,44 @@ export default function Home() {
     }
   }, [json]);
 
+  // --- NUEVA LÓGICA: GENERADOR DE VALIDACIÓN ---
+  const generateValidation = (jsonStr: string) => {
+    try {
+      const obj = JSON.parse(jsonStr);
+      let rules = "public function rules(): array\n{\n    return [\n";
+      Object.keys(obj).forEach(key => {
+        const val = obj[key];
+        let rule = "'required'";
+        if (key.includes('email')) rule += "|'string'|'email'|'max:255'";
+        else if (typeof val === 'string') rule += "|'string'";
+        else if (typeof val === 'number' && Number.isInteger(val)) rule += "|'integer'";
+        else if (typeof val === 'number') rule += "|'numeric'";
+        else if (typeof val === 'boolean') rule += "|'boolean'";
+        if (key.endsWith('_id')) rule += "|'exists:" + key.replace('_id', 's') + ",id'";
+        rules += `        '${key}' => ${rule.replace(/'/g, "'")},\n`;
+      });
+      return rules + "    ];\n}";
+    } catch (e) { return "// Invalid JSON for validation"; }
+  };
+
+  // --- NUEVA LÓGICA: SMART FILL ---
+  const loadExample = (type: 'user' | 'blog' | 'product') => {
+    const examples = {
+      user: { name: "John Doe", email: "john@example.com", age: 25, is_active: true, bio: "Laravel Lover" },
+      blog: { title: "My First Post", content: "Hello World", category_id: 1, published_at: "2024-05-20", views: 0 },
+      product: { name: "MacBook Pro", price: 1999.99, stock: 50, description: "Powerful laptop", on_sale: false }
+    };
+    setJson(JSON.stringify(examples[type], null, 2));
+    setTableName(type === 'blog' ? 'posts' : type + 's');
+  };
+
   const className = tableName.charAt(0).toUpperCase() + tableName.slice(1).replace(/s$/, '');
 
   const results: Record<string, string> = {
     migration: error ? "// Error in JSON" : jsonToLaravelMigration(json, tableName),
     model: error ? "// Error in JSON" : jsonToLaravelModel(json, className),
-    factory: error ? "// Error in JSON" : jsonToLaravelFactory(json, className)
+    factory: error ? "// Error in JSON" : jsonToLaravelFactory(json, className),
+    validation: error ? "// Error in JSON" : generateValidation(json) // Nueva pestaña
   };
 
   const prettifyJson = () => {
@@ -58,7 +90,6 @@ export default function Home() {
     }
   };
 
-  // RESTAURADO: Función de descarga
   const downloadPhpFile = () => {
     const content = results[activeTab];
     const fileName = `${tableName || 'schema'}_${activeTab}.php`;
@@ -111,6 +142,20 @@ export default function Home() {
           </p>
         </header>
 
+        {/* 1. SMART FILL IMPLEMENTADO AQUÍ */}
+        <div className="flex gap-2 mb-4 justify-center items-center">
+          <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest mr-2">Try examples:</span>
+          {['user', 'blog', 'product'].map((type) => (
+            <button
+              key={type}
+              onClick={() => loadExample(type as any)}
+              className="text-[10px] px-3 py-1 bg-white border border-slate-200 rounded-lg hover:border-indigo-500 hover:text-indigo-600 transition font-bold uppercase shadow-sm"
+            >
+              {type}
+            </button>
+          ))}
+        </div>
+
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           <div className="space-y-4">
             <div className={`bg-white p-6 rounded-2xl shadow-sm border-2 transition-all ${error ? 'border-red-300' : 'border-slate-200'}`}>
@@ -130,11 +175,29 @@ export default function Home() {
               <CodeEditor value={json} onChange={setJson} language="json" />
               {error && <div className="mt-4 p-3 bg-red-50 text-red-600 text-xs font-mono rounded-lg border border-red-100 italic">{error}</div>}
             </div>
+
+            {/* 2. ARTISAN COMMAND IMPLEMENTADO AQUÍ */}
+            <div className="bg-slate-900 rounded-2xl p-5 border border-slate-800 shadow-xl">
+              <div className="flex justify-between items-center mb-3">
+                <span className="text-[10px] font-black text-indigo-400 uppercase tracking-widest">Artisan Quick Command</span>
+                <button 
+                  onClick={() => { navigator.clipboard.writeText(`php artisan make:model ${className} -mfs`); alert("Command copied!"); }}
+                  className="text-[10px] text-slate-400 hover:text-white uppercase font-bold transition"
+                >
+                  Copy Command
+                </button>
+              </div>
+              <code className="text-sm sm:text-base block">
+                <span className="text-emerald-400 font-bold">php artisan</span> 
+                <span className="text-slate-100 ml-2 italic text-sm">make:model {className} -mfs</span>
+              </code>
+            </div>
           </div>
 
           <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden flex flex-col">
             <nav className="flex bg-slate-50 border-b">
-              {['migration', 'model', 'factory'].map((tab) => (
+              {/* 3. PESTAÑA DE VALIDACIÓN AÑADIDA */}
+              {['migration', 'model', 'factory', 'validation'].map((tab) => (
                 <button key={tab} onClick={() => setActiveTab(tab)} className={`flex-1 py-4 text-[10px] font-black uppercase tracking-widest transition-all ${activeTab === tab ? 'bg-white text-indigo-600 border-b-2 border-indigo-600' : 'text-slate-400'}`}>
                   {tab}
                 </button>
@@ -159,7 +222,6 @@ export default function Home() {
                 {isSharing ? 'Saving...' : '🚀 Save & Share Schema'}
               </button>
 
-              {/* RESTAURADO: Botón de Descarga */}
               {!error && (
                 <button
                   onClick={downloadPhpFile}
@@ -183,6 +245,7 @@ export default function Home() {
           </div>
         )}
 
+        {/* CONTENIDO SEO RESTANTE... (Igual que antes) */}
         <section className="mt-20 grid grid-cols-1 md:grid-cols-3 gap-10 border-t pt-10">
           <div className="text-center">
             <h3 className="font-bold text-slate-800 mb-2">⚡ Instant Conversion</h3>
@@ -200,11 +263,9 @@ export default function Home() {
 
         <section className="mt-20 max-w-4xl mx-auto prose prose-slate">
           <h2 className="text-3xl font-black text-slate-900 mb-6">How to use LaraQuick: The Ultimate JSON to Laravel Guide</h2>
-
           <p className="text-slate-600 leading-relaxed mb-6">
             LaraQuick is designed to streamline your development workflow by automating the tedious process of writing Laravel Migrations, Models, and Factories. Instead of manually defining every column, you can simply paste your raw data in JSON format and let our generator do the heavy lifting.
           </p>
-
           <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
             <div>
               <h3 className="text-xl font-bold text-slate-800 mb-3">Common JSON Formatting Errors</h3>
@@ -214,7 +275,6 @@ export default function Home() {
                 <li><strong>Nested Objects:</strong> For the best results, use a flat JSON structure for single-table migrations.</li>
               </ul>
             </div>
-
             <div>
               <h3 className="text-xl font-bold text-slate-800 mb-3">Pro Tips for Developers</h3>
               <ul className="text-sm text-slate-600 space-y-2 list-disc pl-5">
@@ -223,17 +283,8 @@ export default function Home() {
               </ul>
             </div>
           </div>
-
-          <div className="mt-12 p-6 bg-indigo-50 rounded-2xl border border-indigo-100">
-            <h3 className="text-lg font-bold text-indigo-900 mb-2">Why use LaraQuick?</h3>
-            <p className="text-sm text-indigo-700 leading-relaxed">
-              Modern web applications require rapid prototyping. LaraQuick follows the <strong>PSR-12 coding standard</strong> and is fully compatible with <strong>Laravel 10 and 11</strong>. By using our tool, you ensure that your code is clean, consistent, and ready for production, reducing the risk of syntax errors in your database schemas.
-            </p>
-          </div>
         </section>
-        
 
-        {/* RESTAURADO: Footer con enlaces legales */}
         <footer className="mt-20 text-center border-t border-slate-200 pt-10 pb-10">
           <div className="flex flex-wrap justify-center gap-x-10 gap-y-4 mb-8">
             <Link href="/about" className="text-[11px] font-bold text-slate-400 hover:text-indigo-600 uppercase tracking-widest transition">About Us</Link>
@@ -241,7 +292,7 @@ export default function Home() {
             <Link href="/terms" className="text-[11px] font-bold text-slate-400 hover:text-indigo-600 uppercase tracking-widest transition">Terms</Link>
           </div>
           <div className="text-[10px] text-slate-300 font-medium uppercase tracking-[0.3em]">
-            &copy; {new Date().getFullYear()} LaraQuick Tools • Built for the Laravel Community
+            &copy; {new Date().getFullYear()} LaraQuick Tool • Built for the Laravel Community
           </div>
         </footer>
       </div>
