@@ -2,44 +2,43 @@ import Link from 'next/link';
 
 export default function Privacy() {
   return (
-    <main className="min-h-screen bg-gray-50 p-8 md:p-20 font-sans">
+    <main className="min-h-screen bg-gray-50 p-8 md:p-20 font-sans text-slate-900">
       <div className="max-w-3xl mx-auto">
         <Link href="/" className="text-indigo-600 font-bold text-xs uppercase tracking-widest hover:underline mb-8 inline-block">
-          &larr; Volver a la herramienta
+          &larr; Back to Tool
         </Link>
 
         <article className="bg-white p-10 md:p-16 rounded-3xl border border-slate-200 shadow-sm prose prose-slate max-w-none">
-          <h1 className="text-4xl font-black text-slate-900 mb-6 tracking-tight">Política de Privacidad</h1>
+          <h1 className="text-4xl font-black text-slate-900 mb-6 tracking-tight">Privacy Policy</h1>
           
           <p className="text-lg text-slate-600 leading-relaxed">
-            En <strong>LaraQuick JSON</strong>, la seguridad de tus datos es nuestra prioridad absoluta. 
-            Esta política explica cómo manejamos la información en nuestro sitio.
+            At <strong>LaraQuick JSON</strong>, the security of your data is our absolute priority. 
+            This policy explains how we handle information on our site.
           </p>
 
-          <h2 className="text-xl font-bold text-slate-800 mt-10">1. Procesamiento Local</h2>
+          <h2 className="text-xl font-bold text-slate-800 mt-10">1. Local Processing</h2>
           <p className="text-slate-600">
-            A diferencia de otras herramientas, LaraQuick procesa todo el código JSON directamente en tu navegador. 
-            <strong> No enviamos tu JSON a nuestros servidores</strong> ni almacenamos el contenido de tus estructuras de datos.
+            Unlike other tools, LaraQuick processes all JSON code directly in your browser. 
+            <strong> We do not send your JSON to our servers</strong> nor do we store the content of your data structures unless you explicitly use the "Share" feature.
           </p>
 
-          <h2 className="text-xl font-bold text-slate-800 mt-8">2. Google AdSense y Cookies</h2>
+          <h2 className="text-xl font-bold text-slate-800 mt-8">2. Google AdSense and Cookies</h2>
           <p className="text-slate-600">
-            Utilizamos Google AdSense para mostrar anuncios. Google puede utilizar cookies para publicar anuncios 
-            basados en las visitas anteriores de un usuario a este sitio web o a otros sitios web. Los usuarios pueden 
-            inhabilitar la publicidad personalizada visitando la Configuración de anuncios de Google.
+            We use Google AdSense to display ads. Google may use cookies to serve ads 
+            based on a user's prior visits to this website or other websites. Users may 
+            opt out of personalized advertising by visiting Google Ads Settings.
           </p>
 
-          <h2 className="text-xl font-bold text-slate-800 mt-8">3. Seguridad</h2>
+          <h2 className="text-xl font-bold text-slate-800 mt-8">3. Shared Data</h2>
           <p className="text-slate-600">
-            Al ser una herramienta que funciona del lado del cliente (Client-side), eliminamos cualquier riesgo 
-            de interceptación de datos en el servidor. Tu código es tuyo y solo tuyo.
+            When you use the "Save & Share" feature, the generated schema and the source JSON are stored in our database to provide you with a permanent public link. This information is public to anyone with the link.
           </p>
 
           <footer className="mt-12 pt-8 border-t border-slate-100 text-slate-400 text-xs uppercase font-bold tracking-widest">
-            Última actualización: Marzo 2026
+            Last updated: March 2026
           </footer>
         </article>
       </div>
     </main>
   );
-} 
+}
