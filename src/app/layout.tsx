@@ -13,14 +13,14 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
-  title: 'LaraQuick - JSON to Eloquent in seconds',
-  description: 'Convierte tus esquemas JSON en modelos de Laravel Eloquent al instante.',
+  title: 'LaraQuick Tool - JSON to Laravel Converter',
+  description: 'Convert your JSON schemas into Laravel Eloquent models in seconds.',
   openGraph: {
-    title: 'LaraQuick',
-    description: 'La herramienta definitiva para desarrolladores Laravel',
+    title: 'LaraQuick Tool',
+    description: 'The ultimate tool for Laravel developers',
     url: 'https://laraquicktool.com',
     siteName: 'LaraQuick',
-    locale: 'es_ES',
+    locale: 'en_US',
     type: 'website',
   },
 };
