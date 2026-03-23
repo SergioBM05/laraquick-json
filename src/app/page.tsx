@@ -15,7 +15,6 @@ export default function Home() {
   const [isSharing, setIsSharing] = useState(false);
   const [shareUrl, setShareUrl] = useState<string | null>(null);
 
-  // Dynamic SEO & Head title
   useEffect(() => {
     document.title = "LaraQuick | JSON to Laravel Converter";
   }, []);
@@ -51,13 +50,25 @@ export default function Home() {
     }
   };
 
-  // Reset Function
   const handleReset = () => {
     if (confirm("Are you sure you want to clear the editor?")) {
       setJson('{\n  \n}');
       setTableName('');
       setShareUrl(null);
     }
+  };
+
+  // RESTAURADO: Función de descarga
+  const downloadPhpFile = () => {
+    const content = results[activeTab];
+    const fileName = `${tableName || 'schema'}_${activeTab}.php`;
+    const blob = new Blob([content], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = fileName;
+    link.click();
+    URL.revokeObjectURL(url);
   };
 
   const handleShare = async () => {
@@ -148,6 +159,16 @@ export default function Home() {
               >
                 {isSharing ? 'Saving...' : '🚀 Save & Share Schema'}
               </button>
+
+              {/* RESTAURADO: Botón de Descarga */}
+              {!error && (
+                <button 
+                  onClick={downloadPhpFile}
+                  className="w-full py-3 border-2 border-indigo-600 text-indigo-600 font-bold rounded-xl hover:bg-indigo-50 transition uppercase text-xs tracking-widest"
+                >
+                  📥 Download .php File
+                </button>
+              )}
             </div>
           </div>
         </div>
@@ -178,8 +199,14 @@ export default function Home() {
           </div>
         </section>
 
+        {/* RESTAURADO: Footer con enlaces legales */}
         <footer className="mt-20 text-center border-t border-slate-200 pt-10 pb-10">
-           <div className="text-[10px] text-slate-300 font-medium uppercase tracking-[0.3em]">
+          <div className="flex flex-wrap justify-center gap-x-10 gap-y-4 mb-8">
+            <Link href="/about" className="text-[11px] font-bold text-slate-400 hover:text-indigo-600 uppercase tracking-widest transition">About Us</Link>
+            <Link href="/privacy" className="text-[11px] font-bold text-slate-400 hover:text-indigo-600 uppercase tracking-widest transition">Privacy Policy</Link>
+            <Link href="/terms" className="text-[11px] font-bold text-slate-400 hover:text-indigo-600 uppercase tracking-widest transition">Terms</Link>
+          </div>
+          <div className="text-[10px] text-slate-300 font-medium uppercase tracking-[0.3em]">
             &copy; {new Date().getFullYear()} LaraQuick Tools • Built for the Laravel Community
           </div>
         </footer>
