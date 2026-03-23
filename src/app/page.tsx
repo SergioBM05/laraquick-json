@@ -16,7 +16,6 @@ export default function Home() {
   const [isSharing, setIsSharing] = useState(false);
   const [shareUrl, setShareUrl] = useState<string | null>(null);
 
-  // --- LÓGICA MODO OSCURO ---
   useEffect(() => {
     if (darkMode) {
       document.documentElement.classList.add('dark');
@@ -42,7 +41,6 @@ export default function Home() {
     }
   }, [json]);
 
-  // --- FUNCIÓN DE COMANDO DINÁMICO (NUEVO) ---
   const getDynamicCommand = () => {
     const modelName = tableName.charAt(0).toUpperCase() + tableName.slice(1).replace(/s$/, '');
     switch (activeTab) {
@@ -151,7 +149,6 @@ export default function Home() {
     <main className={`min-h-screen transition-colors duration-300 ${darkMode ? 'bg-slate-950 text-slate-100' : 'bg-gray-50 text-slate-900'} p-4 md:p-12 font-sans`}>
       <div className="max-w-6xl mx-auto">
 
-        {/* BOTÓN MODO OSCURO */}
         <button
           onClick={() => setDarkMode(!darkMode)}
           className="fixed top-6 right-6 z-50 p-3 rounded-full bg-white dark:bg-slate-800 shadow-lg border border-slate-200 dark:border-slate-700 hover:scale-110 transition-all text-xl"
@@ -171,7 +168,6 @@ export default function Home() {
           </p>
         </header>
 
-        {/* EXAMPLES */}
         <div className="flex gap-2 mb-4 justify-center items-center">
           <span className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest mr-2">Try examples:</span>
           {['user', 'blog', 'product'].map((type) => (
@@ -205,17 +201,11 @@ export default function Home() {
               {error && <div className="mt-4 p-3 bg-red-50 dark:bg-red-900/40 text-red-600 dark:text-red-300 text-xs font-mono rounded-lg border border-red-100 dark:border-red-900 italic">{error}</div>}
             </div>
 
-            {/* COMANDO ARTISAN DINÁMICO (IMPLEMENTADO) */}
             <div className="bg-slate-900 rounded-2xl p-5 border border-slate-800 shadow-xl">
               <div className="flex justify-between items-center mb-3">
-                <span className="text-[10px] font-black text-indigo-400 uppercase tracking-widest">
-                  Artisan {activeTab} Command
-                </span>
+                <span className="text-[10px] font-black text-indigo-400 uppercase tracking-widest">Artisan {activeTab} Command</span>
                 <button
-                  onClick={() => { 
-                    navigator.clipboard.writeText(`php artisan ${getDynamicCommand()}`); 
-                    alert("Command copied!"); 
-                  }}
+                  onClick={() => { navigator.clipboard.writeText(`php artisan ${getDynamicCommand()}`); alert("Command copied!"); }}
                   className="text-[10px] text-slate-400 hover:text-white uppercase font-bold transition"
                 >
                   Copy
@@ -231,11 +221,7 @@ export default function Home() {
           <div className="rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 overflow-hidden flex flex-col bg-white dark:bg-slate-900">
             <nav className="flex bg-slate-50 dark:bg-slate-800 border-b dark:border-slate-800">
               {['migration', 'model', 'factory', 'validation'].map((tab) => (
-                <button 
-                  key={tab} 
-                  onClick={() => setActiveTab(tab)} 
-                  className={`flex-1 py-4 text-[10px] font-black uppercase tracking-widest transition-all ${activeTab === tab ? 'bg-white dark:bg-slate-900 text-indigo-600 border-b-2 border-indigo-600' : 'text-slate-400 dark:text-slate-500'}`}
-                >
+                <button key={tab} onClick={() => setActiveTab(tab)} className={`flex-1 py-4 text-[10px] font-black uppercase tracking-widest transition-all ${activeTab === tab ? 'bg-white dark:bg-slate-900 text-indigo-600 border-b-2 border-indigo-600' : 'text-slate-400 dark:text-slate-500'}`}>
                   {tab}
                 </button>
               ))}
@@ -258,6 +244,13 @@ export default function Home() {
                 {isSharing ? 'Saving...' : '🚀 Save & Share Schema'}
               </button>
 
+              {shareUrl && (
+                <div className="p-3 bg-emerald-50 dark:bg-emerald-900/30 border border-emerald-200 dark:border-emerald-800 rounded-xl animate-in fade-in slide-in-from-top-2">
+                   <p className="text-[10px] font-bold text-emerald-600 uppercase mb-1">Shareable Link:</p>
+                   <input readOnly value={shareUrl} className="w-full bg-transparent text-xs font-mono text-emerald-700 dark:text-emerald-400 outline-none" onClick={(e) => (e.target as HTMLInputElement).select()} />
+                </div>
+              )}
+
               {!error && (
                 <button
                   onClick={downloadPhpFile}
@@ -270,7 +263,38 @@ export default function Home() {
           </div>
         </div>
 
-        {/* SECCIONES SEO Y COMANDOS (SE MANTIENEN IGUAL) */}
+        {/* --- NUEVAS SECCIONES EXPLICATIVAS (RESTAURADAS) --- */}
+        <section className="mt-20 max-w-4xl mx-auto space-y-16">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+            <div>
+              <h2 className="text-2xl font-black mb-4">How it works?</h2>
+              <ul className="space-y-4 text-sm text-slate-600 dark:text-slate-400">
+                <li className="flex gap-3">
+                  <span className="flex-none w-6 h-6 bg-indigo-600 text-white rounded-full flex items-center justify-center font-bold text-xs">1</span>
+                  <span><strong>Paste your JSON:</strong> Copy any object or array of objects from your API or database.</span>
+                </li>
+                <li className="flex gap-3">
+                  <span className="flex-none w-6 h-6 bg-indigo-600 text-white rounded-full flex items-center justify-center font-bold text-xs">2</span>
+                  <span><strong>Define Table Name:</strong> We automatically singularize it for your Models and Factories.</span>
+                </li>
+                <li className="flex gap-3">
+                  <span className="flex-none w-6 h-6 bg-indigo-600 text-white rounded-full flex items-center justify-center font-bold text-xs">3</span>
+                  <span><strong>Instant Code:</strong> Switch between tabs to get Migrations, Models, and even Form Requests.</span>
+                </li>
+              </ul>
+            </div>
+            <div className="bg-red-50 dark:bg-red-900/10 p-8 rounded-3xl border border-red-100 dark:border-red-900/30">
+              <h2 className="text-2xl font-black mb-4 text-red-600 dark:text-red-400">Common Issues</h2>
+              <ul className="space-y-3 text-sm text-red-700 dark:text-red-300/80">
+                <li>• <strong>Trailing Commas:</strong> Standard JSON doesn't allow commas after the last element.</li>
+                <li>• <strong>Double Quotes:</strong> Keys and strings must use "double quotes", not 'single'.</li>
+                <li>• <strong>Data Types:</strong> Ensure numbers don't have quotes if you want 'integer' columns.</li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        {/* SECCIÓN SEO ORIGINAL */}
         <section className="mt-20 grid grid-cols-1 md:grid-cols-3 gap-10 border-t dark:border-slate-800 pt-10">
           <div className="text-center">
             <h3 className="font-bold text-slate-800 dark:text-slate-100 mb-2">⚡ Instant Conversion</h3>
@@ -308,7 +332,7 @@ export default function Home() {
           <div className="mt-12 p-6 bg-indigo-50 dark:bg-indigo-900/20 rounded-2xl border border-indigo-100 dark:border-indigo-800">
             <h3 className="text-lg font-bold text-indigo-900 dark:text-indigo-300 mb-2">Why use LaraQuick?</h3>
             <p className="text-sm text-indigo-700 dark:text-indigo-400 leading-relaxed">
-              Modern web applications require rapid prototyping. LaraQuick follows the <strong>PSR-12 coding standard</strong> and is fully compatible with <strong>Laravel 10 and 11</strong>.
+              Modern web applications require rapid prototyping. LaraQuick follows the <strong>PSR-12 coding standard</strong> and is fully compatible with <strong>Laravel 10 and 11</strong>. By using our tool, you ensure that your code is clean, consistent, and ready for production, reducing the risk of syntax errors in your database schemas.
             </p>
           </div>
         </section>
