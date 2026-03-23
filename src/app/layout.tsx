@@ -58,12 +58,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en" className="scroll-smooth">
       <head>
         {/* 2. Pega el código de AdSense aquí dentro */}
-        <Script
+        <script
           async
           src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7914564898894869"
           crossOrigin="anonymous"
-          strategy="afterInteractive" // Esto ayuda a que no ralentice la carga inicial
-        />
+        ></script>
       </head>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         {children}
