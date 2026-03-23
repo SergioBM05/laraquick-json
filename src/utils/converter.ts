@@ -6,15 +6,22 @@ export const jsonToLaravelMigration = (json: string, tableName: string = 'posts'
         let fields = "";
         Object.keys(obj).forEach((key) => {
             const value = obj[key];
-            let type = "string";
+            
+            // LÓGICA PRO: Soporte para Relaciones
+            if (key.endsWith('_id')) {
+                fields += `            $table->foreignId('${key}')->constrained()->cascadeOnDelete();\n`;
+                return;
+            }
 
+            let type = "string";
             if (typeof value == "number") type = Number.isInteger(value) ? "integer" : "decimal";
             if (typeof value == "boolean") type = "boolean";
             if (Array.isArray(value)) type = "json";
 
-            fields += `$table->${type}('${key}')->nullable();\n`;
+            fields += `            $table->${type}('${key}')->nullable();\n`;
         });
-        return `Schema::create('${tableName}', function (Blueprint $table) {$table->id();${fields}$table->timestamps();});`;
+        
+        return `Schema::create('${tableName}', function (Blueprint $table) {\n            $table->id();\n${fields}            $table->timestamps();\n        });`;
 
     } catch (e) {
         return "// JSON Inválido. Por favor, revisa el formato.";
