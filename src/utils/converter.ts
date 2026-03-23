@@ -61,7 +61,7 @@ export const jsonToLaravelFactory = (json: string, className: string = 'Example'
     Object.keys(obj).forEach((key) => {
       const k = key.toLowerCase();
       let fakeMethod = "fake()->word()";
-
+      
       // Smart Fake Data
       if (k.includes('email')) fakeMethod = "fake()->unique()->safeEmail()";
       else if (k.includes('name')) fakeMethod = "fake()->name()";

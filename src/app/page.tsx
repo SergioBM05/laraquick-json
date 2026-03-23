@@ -149,6 +149,7 @@ export default function Home() {
     <main className={`min-h-screen transition-colors duration-300 ${darkMode ? 'bg-slate-950 text-slate-100' : 'bg-gray-50 text-slate-900'} p-4 md:p-12 font-sans`}>
       <div className="max-w-6xl mx-auto">
 
+        {/* DARK MODE TOGGLE */}
         <button
           onClick={() => setDarkMode(!darkMode)}
           className="fixed top-6 right-6 z-50 p-3 rounded-full bg-white dark:bg-slate-800 shadow-lg border border-slate-200 dark:border-slate-700 hover:scale-110 transition-all text-xl"
@@ -168,6 +169,7 @@ export default function Home() {
           </p>
         </header>
 
+        {/* EXAMPLES */}
         <div className="flex gap-2 mb-4 justify-center items-center">
           <span className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest mr-2">Try examples:</span>
           {['user', 'blog', 'product'].map((type) => (
@@ -182,6 +184,7 @@ export default function Home() {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          {/* EDITOR SIDE */}
           <div className="space-y-4">
             <div className={`p-6 rounded-2xl shadow-sm border-2 transition-all bg-white dark:bg-slate-900 ${error ? 'border-red-300' : 'border-slate-200 dark:border-slate-800'}`}>
               <div className="flex justify-between items-center mb-4">
@@ -218,6 +221,7 @@ export default function Home() {
             </div>
           </div>
 
+          {/* PREVIEW SIDE */}
           <div className="rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 overflow-hidden flex flex-col bg-white dark:bg-slate-900">
             <nav className="flex bg-slate-50 dark:bg-slate-800 border-b dark:border-slate-800">
               {['migration', 'model', 'factory', 'validation'].map((tab) => (
@@ -228,8 +232,13 @@ export default function Home() {
             </nav>
             <div className="grow relative bg-slate-900 min-h-[400px]">
               <CodeEditor value={results[activeTab]} onChange={() => { }} language="php" readOnly={true} />
+              
+              {/* BOTÓN DE COPIAR EN PREVIEW (RECUPERADO) */}
               {!error && (
-                <button onClick={() => { navigator.clipboard.writeText(results[activeTab]); alert("Copied!"); }} className="absolute bottom-6 right-6 bg-indigo-600 text-white px-6 py-2 rounded-xl font-bold text-xs shadow-xl active:scale-95 transition">
+                <button 
+                  onClick={() => { navigator.clipboard.writeText(results[activeTab]); alert("Copied!"); }} 
+                  className="absolute bottom-6 right-6 bg-indigo-600 text-white px-6 py-2 rounded-xl font-bold text-xs shadow-xl active:scale-95 hover:bg-indigo-700 transition z-10"
+                >
                   COPY {activeTab.toUpperCase()}
                 </button>
               )}
@@ -247,7 +256,7 @@ export default function Home() {
               {shareUrl && (
                 <div className="p-3 bg-emerald-50 dark:bg-emerald-900/30 border border-emerald-200 dark:border-emerald-800 rounded-xl animate-in fade-in slide-in-from-top-2">
                    <p className="text-[10px] font-bold text-emerald-600 uppercase mb-1">Shareable Link:</p>
-                   <input readOnly value={shareUrl} className="w-full bg-transparent text-xs font-mono text-emerald-700 dark:text-emerald-400 outline-none" onClick={(e) => (e.target as HTMLInputElement).select()} />
+                   <input readOnly value={shareUrl} className="w-full bg-transparent text-xs font-mono text-emerald-700 dark:text-emerald-400 outline-none text-center" onClick={(e) => (e.target as HTMLInputElement).select()} />
                 </div>
               )}
 
@@ -263,7 +272,7 @@ export default function Home() {
           </div>
         </div>
 
-        {/* --- NUEVAS SECCIONES EXPLICATIVAS (RESTAURADAS) --- */}
+        {/* DOCUMENTACIÓN Y ERRORES (RECUPERADO) */}
         <section className="mt-20 max-w-4xl mx-auto space-y-16">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
             <div>
@@ -294,7 +303,7 @@ export default function Home() {
           </div>
         </section>
 
-        {/* SECCIÓN SEO ORIGINAL */}
+        {/* SEO SECTION */}
         <section className="mt-20 grid grid-cols-1 md:grid-cols-3 gap-10 border-t dark:border-slate-800 pt-10">
           <div className="text-center">
             <h3 className="font-bold text-slate-800 dark:text-slate-100 mb-2">⚡ Instant Conversion</h3>
@@ -310,6 +319,7 @@ export default function Home() {
           </div>
         </section>
 
+        {/* ARTISAN COMMANDS SECTION */}
         <section className="mt-20 max-w-4xl mx-auto prose dark:prose-invert prose-slate">
           <h2 className="text-3xl font-black text-slate-900 dark:text-white mb-6">Laravel Essential Commands</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 not-prose">
@@ -337,10 +347,12 @@ export default function Home() {
           </div>
         </section>
 
+        {/* FOOTER (RECUPERADO TERMS) */}
         <footer className="mt-20 text-center border-t border-slate-200 dark:border-slate-800 pt-10 pb-10">
           <div className="flex flex-wrap justify-center gap-x-10 gap-y-4 mb-8">
             <Link href="/about" className="text-[11px] font-bold text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 uppercase tracking-widest transition">About Us</Link>
             <Link href="/privacy" className="text-[11px] font-bold text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 uppercase tracking-widest transition">Privacy Policy</Link>
+            <Link href="/terms" className="text-[11px] font-bold text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 uppercase tracking-widest transition">Terms of Service</Link>
           </div>
           <div className="text-[10px] text-slate-300 dark:text-slate-600 font-medium uppercase tracking-[0.3em]">
             &copy; {new Date().getFullYear()} LaraQuick Tool • Built for the Laravel Community
