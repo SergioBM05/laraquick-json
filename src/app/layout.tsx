@@ -12,11 +12,16 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-export const metadata: Metadata = {
-  title: "LaraQuick JSON - Convertidor de JSON a Laravel",
-  description: "La herramienta definitiva para generar migraciones, modelos y factories de Laravel desde JSON.",
-  icons: {
-    icon: "/favicon.ico",
+export const metadata = {
+  title: 'LaraQuick - JSON to Eloquent in seconds',
+  description: 'Convierte tus esquemas JSON en modelos de Laravel Eloquent al instante.',
+  openGraph: {
+    title: 'LaraQuick',
+    description: 'La herramienta definitiva para desarrolladores Laravel',
+    url: 'https://laraquick.vercel.app',
+    siteName: 'LaraQuick',
+    locale: 'es_ES',
+    type: 'website',
   },
 };
 

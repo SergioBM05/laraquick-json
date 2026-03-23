@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { jsonToLaravelMigration, jsonToLaravelModel } from '@/utils/converter';
 import CodeEditor from '@/components/CodeEditor';
+import { useRouter } from 'next/navigation';
 
 // Función para generar Factory
 const jsonToLaravelFactory = (json: string, className: string = 'Example'): string => {
@@ -22,6 +23,7 @@ export default function Home() {
   const [tableName, setTableName] = useState('posts');
   const [activeTab, setActiveTab] = useState('migration');
   const [error, setError] = useState<string | null>(null);
+  const router = useRouter();
   
   const [isSharing, setIsSharing] = useState(false);
   const [shareUrl, setShareUrl] = useState<string | null>(null);
@@ -47,6 +49,7 @@ export default function Home() {
     factory: error ? "// Error en el JSON" : jsonToLaravelFactory(json, className)
   };
 
+  
   const prettifyJson = () => {
     try {
       const obj = JSON.parse(json);
@@ -96,6 +99,7 @@ export default function Home() {
       setIsSharing(false);
     }
   };
+  
 
   // Validación para deshabilitar botones
   const isInvalid = !!error || json.trim() === "" || json === "{}";
