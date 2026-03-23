@@ -18,7 +18,7 @@ export const metadata = {
   openGraph: {
     title: 'LaraQuick',
     description: 'La herramienta definitiva para desarrolladores Laravel',
-    url: 'https://laraquick.vercel.app',
+    url: 'https://laraquicktool.com',
     siteName: 'LaraQuick',
     locale: 'es_ES',
     type: 'website',

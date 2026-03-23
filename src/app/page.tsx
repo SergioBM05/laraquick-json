@@ -16,7 +16,7 @@ export default function Home() {
   const [shareUrl, setShareUrl] = useState<string | null>(null);
 
   useEffect(() => {
-    document.title = "LaraQuick | JSON to Laravel Converter";
+    document.title = "LaraQuick Tool | JSON to Laravel Converter";
   }, []);
 
   useEffect(() => {
