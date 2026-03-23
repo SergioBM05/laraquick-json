@@ -232,11 +232,11 @@ export default function Home() {
             </nav>
             <div className="grow relative bg-slate-900 min-h-[400px]">
               <CodeEditor value={results[activeTab]} onChange={() => { }} language="php" readOnly={true} />
-              
+
               {/* BOTÓN DE COPIAR EN PREVIEW (RECUPERADO) */}
               {!error && (
-                <button 
-                  onClick={() => { navigator.clipboard.writeText(results[activeTab]); alert("Copied!"); }} 
+                <button
+                  onClick={() => { navigator.clipboard.writeText(results[activeTab]); alert("Copied!"); }}
                   className="absolute bottom-6 right-6 bg-indigo-600 text-white px-6 py-2 rounded-xl font-bold text-xs shadow-xl active:scale-95 hover:bg-indigo-700 transition z-10"
                 >
                   COPY {activeTab.toUpperCase()}
@@ -253,10 +253,33 @@ export default function Home() {
                 {isSharing ? 'Saving...' : '🚀 Save & Share Schema'}
               </button>
 
+              {/* SECCIÓN DE ÉXITO POST-GENERACIÓN DE ENLACE */}
               {shareUrl && (
-                <div className="p-3 bg-emerald-50 dark:bg-emerald-900/30 border border-emerald-200 dark:border-emerald-800 rounded-xl animate-in fade-in slide-in-from-top-2">
-                   <p className="text-[10px] font-bold text-emerald-600 uppercase mb-1">Shareable Link:</p>
-                   <input readOnly value={shareUrl} className="w-full bg-transparent text-xs font-mono text-emerald-700 dark:text-emerald-400 outline-none text-center" onClick={(e) => (e.target as HTMLInputElement).select()} />
+                <div className="p-4 bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800 rounded-xl animate-in fade-in zoom-in duration-300">
+                  <p className="text-[10px] font-black text-emerald-600 dark:text-emerald-400 uppercase mb-3 tracking-widest">
+                    ✅ Schema saved successfully!
+                  </p>
+                  <div className="flex flex-col sm:flex-row gap-2">
+                    <input
+                      readOnly
+                      value={shareUrl}
+                      className="flex-1 bg-white dark:bg-slate-900 p-2.5 rounded-lg text-xs font-mono text-emerald-700 dark:text-emerald-300 border border-emerald-100 dark:border-emerald-800 outline-none"
+                    />
+                    <div className="flex gap-2">
+                      <button
+                        onClick={() => { navigator.clipboard.writeText(shareUrl); alert("Link copied!"); }}
+                        className="flex-1 sm:flex-none px-4 py-2 bg-emerald-600 text-white text-[10px] font-bold rounded-lg hover:bg-emerald-700 transition uppercase tracking-wider"
+                      >
+                        Copy
+                      </button>
+                      <button
+                        onClick={() => window.open(shareUrl, '_blank')}
+                        className="flex-1 sm:flex-none px-4 py-2 bg-slate-800 text-white text-[10px] font-bold rounded-lg hover:bg-slate-950 transition uppercase tracking-wider border border-slate-700"
+                      >
+                        Preview
+                      </button>
+                    </div>
+                  </div>
                 </div>
               )}
 
