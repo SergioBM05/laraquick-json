@@ -231,6 +231,76 @@ export default function Home() {
             </p>
           </div>
         </section>
+        <section className="mt-20 max-w-5xl mx-auto border-t border-slate-200 pt-16 pb-10 px-4">
+          <div className="max-w-3xl mx-auto text-center mb-12">
+            <h2 className="text-3xl font-black text-slate-900 mb-4 uppercase tracking-tighter">
+              How to use <span className="text-indigo-600">LaraQuick Tool</span>
+            </h2>
+            <p className="text-lg text-slate-600 font-medium">
+              Stop wasting time writing boilerplate code. Convert your raw JSON data into production-ready Laravel files in seconds.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-start">
+            {/* Columna Izquierda: Guía de pasos */}
+            <div className="space-y-8">
+              <div>
+                <h3 className="flex items-center text-xl font-bold text-slate-800 mb-3">
+                  <span className="bg-indigo-600 text-white w-8 h-8 rounded-lg flex items-center justify-center mr-3 text-sm">1</span>
+                  Paste your JSON
+                </h3>
+                <p className="text-slate-600 text-sm leading-relaxed">
+                  Drop your JSON object into the editor. Ensure your keys use <strong>snake_case</strong> (e.g., <code>user_id</code>) for perfect Laravel naming conventions.
+                </p>
+              </div>
+
+              <div>
+                <h3 className="flex items-center text-xl font-bold text-slate-800 mb-3">
+                  <span className="bg-indigo-600 text-white w-8 h-8 rounded-lg flex items-center justify-center mr-3 text-sm">2</span>
+                  Define Table Name
+                </h3>
+                <p className="text-slate-600 text-sm leading-relaxed">
+                  Enter the plural name of your database table (e.g., <code>posts</code>). We automatically handle the Singular/Plural conversion for your Models and Factories.
+                </p>
+              </div>
+
+              <div>
+                <h3 className="flex items-center text-xl font-bold text-slate-800 mb-3">
+                  <span className="bg-indigo-600 text-white w-8 h-8 rounded-lg flex items-center justify-center mr-3 text-sm">3</span>
+                  Export and Save
+                </h3>
+                <p className="text-slate-600 text-sm leading-relaxed">
+                  Copy the generated PHP code directly or <strong>Download the .php file</strong>. Use the "Save & Share" button to keep your schema stored in the cloud.
+                </p>
+              </div>
+            </div>
+
+            {/* Columna Derecha: FAQ / Tips técnicos */}
+            <div className="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm">
+              <h3 className="text-xl font-bold text-slate-800 mb-6">Pro Tips for Developers</h3>
+
+              <div className="space-y-6">
+                <div>
+                  <h4 className="text-indigo-600 font-bold text-xs uppercase tracking-widest mb-1">Foreign Keys</h4>
+                  <p className="text-slate-500 text-sm italic">
+                    Naming a field <code>category_id</code> automatically generates <code>$table-&gt;foreignId('category_id')-&gt;constrained()</code>.
+                  </p>
+                </div>
+
+                <div>
+                  <h4 className="text-indigo-600 font-bold text-xs uppercase tracking-widest mb-1">Data Types</h4>
+                  <p className="text-slate-500 text-sm italic">
+                    LaraQuick detects <strong>strings, booleans, integers, and dates</strong> to assign the correct Laravel migration type automatically.
+                  </p>
+                </div>
+
+                <div className="pt-4 border-t border-slate-100 text-[11px] text-slate-400 leading-relaxed uppercase font-semibold tracking-wide">
+                  Optimized for PHP 8.2+ and Laravel 10/11 Eloquent Standards.
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
 
         {/* RESTAURADO: Footer con enlaces legales */}
         <footer className="mt-20 text-center border-t border-slate-200 pt-10 pb-10">
