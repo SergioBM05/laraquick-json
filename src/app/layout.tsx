@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Script from "next/script"; // 1. Importa esto
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import Link from "next/link";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -64,6 +65,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           crossOrigin="anonymous"
         ></script>
       </head>
+      <nav className="flex justify-center gap-6 py-4 bg-white border-b border-slate-100 sticky top-0 z-50">
+        <Link href="/" className="text-xs font-black uppercase tracking-widest hover:text-indigo-600 transition">JSON to Laravel</Link>
+        <Link href="/sql-to-laravel" className="text-xs font-black uppercase tracking-widest hover:text-indigo-600 transition">SQL to Laravel</Link>
+        <Link href="/laravel-validation-generator" className="text-xs font-black uppercase tracking-widest hover:text-indigo-600 transition">Validation Gen</Link>
+      </nav>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         {children}
       </body>
