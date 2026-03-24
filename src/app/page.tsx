@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { jsonToLaravelMigration, jsonToLaravelModel, jsonToLaravelFactory } from '@/utils/converter';
+import { jsonToLaravelModel, jsonToLaravelFactory } from '@/utils/converter';
 import CodeEditor from '@/components/CodeEditor';
 import { useRouter } from 'next/navigation';
 
@@ -9,7 +9,7 @@ import { useRouter } from 'next/navigation';
 export default function Home() {
   const [json, setJson] = useState('{\n  "title": "Hello World",\n  "user_id": 1,\n  "is_active": true\n}');
   const [tableName, setTableName] = useState('posts');
-  const [activeTab, setActiveTab] = useState('migration');
+  const [activeTab, setActiveTab] = useState('model');
   const [error, setError] = useState<string | null>(null);
   const [darkMode, setDarkMode] = useState(false);
   const router = useRouter();
@@ -45,7 +45,6 @@ export default function Home() {
   const getDynamicCommand = () => {
     const modelName = tableName.charAt(0).toUpperCase() + tableName.slice(1).replace(/s$/, '');
     switch (activeTab) {
-      case 'migration': return `make:migration create_${tableName || 'table'}_table`;
       case 'model': return `make:model ${modelName}`;
       case 'factory': return `make:factory ${modelName}Factory --model=${modelName}`;
       case 'validation': return `make:request Store${modelName}Request`;
@@ -85,7 +84,6 @@ export default function Home() {
   const className = tableName.charAt(0).toUpperCase() + tableName.slice(1).replace(/s$/, '');
 
   const results: Record<string, string> = {
-    migration: error ? "// Error in JSON" : jsonToLaravelMigration(json, tableName),
     model: error ? "// Error in JSON" : jsonToLaravelModel(json, className),
     factory: error ? "// Error in JSON" : jsonToLaravelFactory(json, className),
     validation: error ? "// Error in JSON" : generateValidation(json)
@@ -145,6 +143,18 @@ export default function Home() {
   };
 
   const isInvalid = !!error || json.trim() === "" || json === "{}";
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const content = event.target?.result as string;
+      // Si estamos en la de JSON:
+      setJson(content);
+    };
+    reader.readAsText(file);
+  };
 
   return (
     <main className={`min-h-screen transition-colors duration-300 ${darkMode ? 'bg-slate-950 text-slate-100' : 'bg-gray-50 text-slate-900'} p-4 md:p-12 font-sans`}>
@@ -160,7 +170,7 @@ export default function Home() {
 
         <header className="text-center mb-10">
           <div className="inline-block bg-indigo-600 text-white text-[10px] font-bold px-3 py-1 rounded-full mb-2 uppercase tracking-widest shadow-sm">
-            Laravel Developer Tools
+            LaraQuick: Online Developer Tools
           </div>
           <h1 className="text-6xl font-black tracking-tighter  text-indigo-600">
             JSON <span className="dark:text-white">to Laravel</span>
@@ -193,7 +203,14 @@ export default function Home() {
                 <div className="flex gap-2">
                   <button onClick={prettifyJson} disabled={!!error} className="text-[10px] font-black uppercase tracking-widest px-3 py-1 bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 rounded-md hover:bg-indigo-600 hover:text-white transition">Format</button>
                   <button onClick={handleReset} className="text-[10px] font-black uppercase tracking-widest px-3 py-1 bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400 rounded-md hover:bg-red-600 hover:text-white transition">Reset</button>
+                  <input type="file" id="file-json" className="hidden" accept=".json" onChange={handleFileUpload} />
+                  <label htmlFor="file-json" className="flex items-center gap-2 px-4 py-1.5 bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 rounded-full text-[10px] font-black uppercase cursor-pointer hover:bg-indigo-600 hover:text-white transition shadow-sm">
+                    Import .JSON
+                  </label>
                 </div>
+
+
+
               </div>
               <input
                 className="w-full p-3 mb-4 border border-slate-200 dark:border-slate-700 rounded-xl bg-slate-50 dark:bg-slate-800 dark:text-white font-mono text-sm outline-none focus:ring-2 focus:ring-indigo-500"
@@ -220,12 +237,37 @@ export default function Home() {
                 <span className="text-slate-100 ml-2 italic text-sm">{getDynamicCommand()}</span>
               </code>
             </div>
+
+            <div className="flex justify-between items-end mb-2 ml-2">
+              <label className="text-xs font-black uppercase tracking-widest text-slate-400">
+                Input {activeTab === 'sql' ? 'SQL' : 'JSON'}:
+              </label>
+
+              <div className="relative">
+                <input
+                  type="file"
+                  id="file-upload"
+                  className="hidden"
+                  accept=".sql,.json,.txt"
+                  onChange={handleFileUpload}
+                />
+                <label
+                  htmlFor="file-upload"
+                  className="flex items-center gap-2 px-4 py-1.5 bg-white border border-slate-200 rounded-full text-[10px] font-black uppercase tracking-tight text-slate-600 cursor-pointer hover:bg-slate-50 hover:border-indigo-300 transition-all shadow-sm"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+                  </svg>
+                  Import File
+                </label>
+              </div>
+            </div>
           </div>
 
           {/* PREVIEW SIDE */}
           <div className="rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 overflow-hidden flex flex-col bg-white dark:bg-slate-900">
             <nav className="flex bg-slate-50 dark:bg-slate-800 border-b dark:border-slate-800">
-              {['migration', 'model', 'factory', 'validation'].map((tab) => (
+              {['model', 'factory', 'validation'].map((tab) => (
                 <button key={tab} onClick={() => setActiveTab(tab)} className={`flex-1 py-4 text-[10px] font-black uppercase tracking-widest transition-all ${activeTab === tab ? 'bg-white dark:bg-slate-900 text-indigo-600 border-b-2 border-indigo-600' : 'text-slate-400 dark:text-slate-500'}`}>
                   {tab}
                 </button>
@@ -392,7 +434,7 @@ export default function Home() {
             <Link href="/privacy" className="text-[11px] font-bold text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 uppercase tracking-widest transition">Privacy Policy</Link>
             <Link href="/terms" className="text-[11px] font-bold text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 uppercase tracking-widest transition">Terms of Service</Link>
           </div>
-          <div className="text-[10px] text-slate-300 dark:text-slate-600 font-medium uppercase tracking-[0.3em]">
+          <div className="text-[10px] text-slate-400 dark:text-slate-600 font-medium uppercase tracking-[0.3em]">
             &copy; {new Date().getFullYear()} LaraQuick Tool • Built for the Laravel Community
           </div>
         </footer>
