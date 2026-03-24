@@ -70,7 +70,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <nav className="flex justify-center gap-6 py-4 bg-white border-b border-slate-100 sticky top-0 z-50">
           <Link href="/" className="text-xs font-black uppercase tracking-widest hover:text-indigo-600 transition">JSON to Laravel</Link>
           <Link href="/sql-to-laravel" className="text-xs font-black uppercase tracking-widest hover:text-indigo-600 transition">SQL to Laravel</Link>
-          <Link href="/laravel-validation-generator" className="text-xs font-black uppercase tracking-widest hover:text-indigo-600 transition">Validation Gen</Link>
         </nav>
       </body>
     </html>
