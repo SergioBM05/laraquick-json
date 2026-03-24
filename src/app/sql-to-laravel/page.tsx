@@ -37,10 +37,10 @@ export default function SqlToLaravel() {
         // 1. Intentar sacar el nombre del SQL, pero si el usuario escribió en el input, usar el input.
         const tableMatch = sql.match(/CREATE TABLE\s+[`"']?(\w+)[`"']?/i);
         const sqlDetectedName = tableMatch ? tableMatch[1] : 'table';
-        
+
         // Prioridad: Input del usuario > Nombre detectado en SQL
         const finalTableName = tableName.trim() !== "" ? tableName : sqlDetectedName;
-        
+
         const modelName = finalTableName
             .replace(/s$/, '') // Quitar plural simple
             .split('_')
@@ -56,10 +56,10 @@ export default function SqlToLaravel() {
         lines.forEach(line => {
             const clean = line.trim().toLowerCase();
             if (clean.startsWith('--') || clean.startsWith('#') || clean === '') return;
-            
+
             const parts = clean.split(/\s+/);
             const colName = parts[0].replace(/['"`]/g, '').replace(',', '');
-            
+
             // Ignorar campos automáticos de Laravel
             if (['id', 'created_at', 'updated_at', 'deleted_at'].includes(colName) || clean.includes('primary key')) return;
 
@@ -141,17 +141,33 @@ export default function SqlToLaravel() {
 
     const handleShare = async () => {
         setIsSharing(true);
+        setShareUrl(null);
         try {
             const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://eloquentgenback-production.up.railway.app/api';
+
             const response = await fetch(`${API_URL}/share`, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ table_name: tableName, sql_content: sql }),
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({
+                    table_name: tableName || 'unnamed_table',
+                    // CAMBIO AQUÍ: Usamos 'json_content' porque es lo que tu backend entiende
+                    json_content: sql
+                }),
             });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.message || "Server error");
+            }
+
             const data = await response.json();
             setShareUrl(`${window.location.origin}/s/${data.slug}`);
-        } catch (e) {
-            alert("Error connecting to server.");
+        } catch (e: any) {
+            console.error("Error sharing:", e);
+            alert("Error connecting to the server: " + e.message);
         } finally {
             setIsSharing(false);
         }
@@ -160,7 +176,7 @@ export default function SqlToLaravel() {
     return (
         <main className={`min-h-screen transition-colors duration-300 ${darkMode ? 'bg-slate-950 text-slate-100' : 'bg-gray-50 text-slate-900'} p-4 md:p-12 font-sans`}>
             <div className="max-w-6xl mx-auto">
-                
+
                 <button onClick={() => setDarkMode(!darkMode)} className="fixed top-6 right-6 z-50 p-3 rounded-full bg-white dark:bg-slate-800 shadow-lg border border-slate-200 dark:border-slate-700 hover:scale-110 transition-all text-xl">
                     {darkMode ? '☀️' : '🌙'}
                 </button>
