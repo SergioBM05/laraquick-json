@@ -14,7 +14,21 @@ export default function Home() {
   const [darkMode, setDarkMode] = useState(false);
   const router = useRouter();
 
-  
+
+  // Al cargar la página, recuperamos lo guardado
+  useEffect(() => {
+    const savedJson = localStorage.getItem('laraquick_last_json');
+    const savedTable = localStorage.getItem('laraquick_last_table');
+    if (savedJson) setJson(savedJson);
+    if (savedTable) setTableName(savedTable);
+  }, []);
+
+  // Cada vez que cambie el JSON o el Nombre, guardamos
+  useEffect(() => {
+    if (json) localStorage.setItem('laraquick_last_json', json);
+    if (tableName) localStorage.setItem('laraquick_last_table', tableName);
+  }, [json, tableName]);
+
 
   useEffect(() => {
     if (darkMode) {
@@ -44,10 +58,14 @@ export default function Home() {
   const getDynamicCommand = () => {
     const modelName = tableName.charAt(0).toUpperCase() + tableName.slice(1).replace(/s$/, '');
     switch (activeTab) {
-      case 'model': return `make:model ${modelName}`;
-      case 'factory': return `make:factory ${modelName}Factory --model=${modelName}`;
-      case 'validation': return `make:request Store${modelName}Request`;
-      default: return `make:model ${modelName} -mfs`;
+      case 'model':
+        return `make:model ${modelName} -mfs`; // -mfs crea Migración, Factory y Seeder de una!
+      case 'factory':
+        return `make:factory ${modelName}Factory`;
+      case 'validation':
+        return `make:request Store${modelName}Request`;
+      default:
+        return `make:model ${modelName} -mfs`;
     }
   };
 
@@ -117,7 +135,7 @@ export default function Home() {
     URL.revokeObjectURL(url);
   };
 
- 
+
 
   const isInvalid = !!error || json.trim() === "" || json === "{}";
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -157,18 +175,28 @@ export default function Home() {
           </p>
         </header>
 
-        {/* EXAMPLES */}
-        <div className="flex gap-2 mb-4 justify-center items-center">
-          <span className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest mr-2">Try examples:</span>
-          {['user', 'blog', 'product'].map((type) => (
-            <button
-              key={type}
-              onClick={() => loadExample(type as any)}
-              className="text-[10px] px-3 py-1 bg-white dark:bg-slate-800 dark:text-slate-100 border border-slate-200 dark:border-slate-700 rounded-lg hover:border-indigo-500 hover:text-indigo-600 transition font-bold uppercase shadow-sm"
-            >
-              {type}
-            </button>
-          ))}
+        <div className="mt-8 p-6 bg-indigo-50/50 dark:bg-slate-800/50 rounded-2xl border border-dashed border-indigo-200 dark:border-slate-700">
+          <h4 className="text-xs font-black uppercase tracking-widest text-indigo-600 dark:text-indigo-400 mb-4 text-center">
+            Quick Starter Schemas
+          </h4>
+          <div className="flex flex-wrap gap-3 justify-center">
+            {[
+              { label: "🛒 E-commerce Product", data: { name: "iPhone 15", price: 999.99, stock: 10, description: "Latest model", is_active: true } },
+              { label: "👤 User Profile", data: { bio: "Dev", twitter_handle: "@dev", birth_date: "1995-01-01", points: 100 } },
+              { label: "📑 Blog Post", data: { title: "Title", content: "Body", category_id: 1, published_at: "2024-01-01" } }
+            ].map((schema, i) => (
+              <button
+                key={i}
+                onClick={() => {
+                  setJson(JSON.stringify(schema.data, null, 2));
+                  setTableName(schema.label.split(' ')[1].toLowerCase() + 's');
+                }}
+                className="px-4 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-[11px] font-bold hover:border-indigo-500 transition-all shadow-sm"
+              >
+                {schema.label}
+              </button>
+            ))}
+          </div>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -342,15 +370,19 @@ export default function Home() {
         </section>
 
         {/* FOOTER (RECUPERADO TERMS) */}
-        <footer className="mt-20 text-center border-t border-slate-200 dark:border-slate-800 pt-10 pb-10">
+        <footer className="mt-20 text-center border-t border-slate-200 dark:border-slate-800 pt-10 pb-12">
           <div className="flex flex-wrap justify-center gap-x-10 gap-y-4 mb-8">
-            <Link href="/about" className="text-[11px] font-bold text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 uppercase tracking-widest transition">About Us</Link>
-            <Link href="/privacy" className="text-[11px] font-bold text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 uppercase tracking-widest transition">Privacy Policy</Link>
-            <Link href="/terms" className="text-[11px] font-bold text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 uppercase tracking-widest transition">Terms of Service</Link>
+            <Link href="/about" className="text-[11px] font-bold text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 uppercase tracking-widest transition">About Tool</Link>
+            <Link href="/sql-to-laravel" className="text-[11px] font-bold text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 uppercase tracking-widest transition">SQL Converter</Link>
+            <Link href="/privacy" className="text-[11px] font-bold text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 uppercase tracking-widest transition">Privacy</Link>
           </div>
-          <div className="text-[10px] text-slate-400 dark:text-slate-600 font-medium uppercase tracking-[0.3em]">
-            &copy; {new Date().getFullYear()} LaraQuick Tool • Built for the Laravel Community
+          <div className="text-[10px] text-slate-400 dark:text-slate-600 font-medium uppercase tracking-[0.3em] mb-4">
+            &copy; {new Date().getFullYear()} LaraQuick Tool • Created for the Laravel Ecosystem
           </div>
+          <p className="text-[9px] text-slate-400 max-w-md mx-auto leading-loose">
+            LaraQuick is not affiliated with Laravel LLC. Laravel is a trademark of Taylor Otwell.
+            The generated code should be reviewed before production use.
+          </p>
         </footer>
       </div>
     </main>
