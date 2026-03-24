@@ -14,8 +14,7 @@ export default function Home() {
   const [darkMode, setDarkMode] = useState(false);
   const router = useRouter();
 
-  const [isSharing, setIsSharing] = useState(false);
-  const [shareUrl, setShareUrl] = useState<string | null>(null);
+  
 
   useEffect(() => {
     if (darkMode) {
@@ -103,7 +102,6 @@ export default function Home() {
     if (confirm("Are you sure you want to clear the editor?")) {
       setJson('{\n  \n}');
       setTableName('');
-      setShareUrl(null);
     }
   };
 
@@ -119,28 +117,7 @@ export default function Home() {
     URL.revokeObjectURL(url);
   };
 
-  const handleShare = async () => {
-    setIsSharing(true);
-    setShareUrl(null);
-    try {
-      const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://eloquentgenback-production.up.railway.app/api';
-      const response = await fetch(`${API_URL}/share`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-        body: JSON.stringify({
-          table_name: tableName,
-          json_content: json
-        }),
-      });
-      if (!response.ok) throw new Error("Server error");
-      const data = await response.json();
-      setShareUrl(`${window.location.origin}/s/${data.slug}`);
-    } catch (e) {
-      alert("Error connecting to the server.");
-    } finally {
-      setIsSharing(false);
-    }
-  };
+ 
 
   const isInvalid = !!error || json.trim() === "" || json === "{}";
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -237,31 +214,6 @@ export default function Home() {
                 <span className="text-slate-100 ml-2 italic text-sm">{getDynamicCommand()}</span>
               </code>
             </div>
-
-            <div className="flex justify-between items-end mb-2 ml-2">
-              <label className="text-xs font-black uppercase tracking-widest text-slate-400">
-                Input {activeTab === 'sql' ? 'SQL' : 'JSON'}:
-              </label>
-
-              <div className="relative">
-                <input
-                  type="file"
-                  id="file-upload"
-                  className="hidden"
-                  accept=".sql,.json,.txt"
-                  onChange={handleFileUpload}
-                />
-                <label
-                  htmlFor="file-upload"
-                  className="flex items-center gap-2 px-4 py-1.5 bg-white border border-slate-200 rounded-full text-[10px] font-black uppercase tracking-tight text-slate-600 cursor-pointer hover:bg-slate-50 hover:border-indigo-300 transition-all shadow-sm"
-                >
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
-                  </svg>
-                  Import File
-                </label>
-              </div>
-            </div>
           </div>
 
           {/* PREVIEW SIDE */}
@@ -288,44 +240,6 @@ export default function Home() {
             </div>
 
             <div className="p-4 bg-slate-50 dark:bg-slate-800/50 border-t dark:border-slate-800 space-y-3 text-center">
-              <button
-                onClick={handleShare}
-                disabled={isSharing || isInvalid}
-                className={`w-full py-4 text-white font-black uppercase tracking-widest rounded-xl transition-all shadow-lg ${(isSharing || isInvalid) ? 'bg-slate-300 dark:bg-slate-700 cursor-not-allowed' : 'bg-emerald-500 hover:bg-emerald-600 active:scale-95'}`}
-              >
-                {isSharing ? 'Saving...' : '🚀 Save & Share Schema'}
-              </button>
-
-              {/* SECCIÓN DE ÉXITO POST-GENERACIÓN DE ENLACE */}
-              {shareUrl && (
-                <div className="p-4 bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800 rounded-xl animate-in fade-in zoom-in duration-300">
-                  <p className="text-[10px] font-black text-emerald-600 dark:text-emerald-400 uppercase mb-3 tracking-widest">
-                    ✅ Schema saved successfully!
-                  </p>
-                  <div className="flex flex-col sm:flex-row gap-2">
-                    <input
-                      readOnly
-                      value={shareUrl}
-                      className="flex-1 bg-white dark:bg-slate-900 p-2.5 rounded-lg text-xs font-mono text-emerald-700 dark:text-emerald-300 border border-emerald-100 dark:border-emerald-800 outline-none"
-                    />
-                    <div className="flex gap-2">
-                      <button
-                        onClick={() => { navigator.clipboard.writeText(shareUrl); alert("Link copied!"); }}
-                        className="flex-1 sm:flex-none px-4 py-2 bg-emerald-600 text-white text-[10px] font-bold rounded-lg hover:bg-emerald-700 transition uppercase tracking-wider"
-                      >
-                        Copy
-                      </button>
-                      <button
-                        onClick={() => window.open(shareUrl, '_blank')}
-                        className="flex-1 sm:flex-none px-4 py-2 bg-slate-800 text-white text-[10px] font-bold rounded-lg hover:bg-slate-950 transition uppercase tracking-wider border border-slate-700"
-                      >
-                        Preview
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              )}
-
               {!error && (
                 <button
                   onClick={downloadPhpFile}

@@ -24,8 +24,7 @@ export default function SqlToLaravel() {
     const [tableName, setTableName] = useState('posts');
     const [activeTab, setActiveTab] = useState<TabType>('migration');
     const [darkMode, setDarkMode] = useState(false);
-    const [isSharing, setIsSharing] = useState(false);
-    const [shareUrl, setShareUrl] = useState<string | null>(null);
+
 
     useEffect(() => {
         if (darkMode) document.documentElement.classList.add('dark');
@@ -113,7 +112,6 @@ export default function SqlToLaravel() {
         if (confirm("Are you sure?")) {
             setSql('');
             setTableName('');
-            setShareUrl(null);
         }
     };
 
@@ -139,39 +137,7 @@ export default function SqlToLaravel() {
         URL.revokeObjectURL(url);
     };
 
-    const handleShare = async () => {
-        setIsSharing(true);
-        setShareUrl(null);
-        try {
-            const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://eloquentgenback-production.up.railway.app/api';
-
-            const response = await fetch(`${API_URL}/share`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json'
-                },
-                body: JSON.stringify({
-                    table_name: tableName || 'unnamed_table',
-                    // CAMBIO AQUÍ: Usamos 'json_content' porque es lo que tu backend entiende
-                    json_content: sql
-                }),
-            });
-
-            if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.message || "Server error");
-            }
-
-            const data = await response.json();
-            setShareUrl(`${window.location.origin}/s/${data.slug}`);
-        } catch (e: any) {
-            console.error("Error sharing:", e);
-            alert("Error connecting to the server: " + e.message);
-        } finally {
-            setIsSharing(false);
-        }
-    };
+   
 
     return (
         <main className={`min-h-screen transition-colors duration-300 ${darkMode ? 'bg-slate-950 text-slate-100' : 'bg-gray-50 text-slate-900'} p-4 md:p-12 font-sans`}>
@@ -260,27 +226,6 @@ export default function SqlToLaravel() {
                             </button>
                         </div>
                         <div className="p-4 bg-slate-50 dark:bg-slate-800/50 border-t dark:border-slate-800 space-y-3 text-center">
-                            <button
-                                onClick={handleShare}
-                                disabled={isSharing || !sql}
-                                className={`w-full py-4 text-white font-black uppercase tracking-widest rounded-xl transition-all shadow-lg ${(isSharing || !sql) ? 'bg-slate-300 dark:bg-slate-700 cursor-not-allowed' : 'bg-emerald-500 hover:bg-emerald-600 active:scale-95'}`}
-                            >
-                                {isSharing ? 'Saving...' : '🚀 Save & Share Schema'}
-                            </button>
-
-                            {shareUrl && (
-                                <div className="p-4 bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800 rounded-xl">
-                                    <p className="text-[10px] font-black text-emerald-600 dark:text-emerald-400 uppercase mb-3 tracking-widest text-center">✅ Schema saved successfully!</p>
-                                    <div className="flex flex-col sm:flex-row gap-2">
-                                        <input readOnly value={shareUrl} className="flex-1 bg-white dark:bg-slate-900 p-2.5 rounded-lg text-xs font-mono text-emerald-700 dark:text-emerald-300 border border-emerald-100 dark:border-emerald-800 outline-none" />
-                                        <div className="flex gap-2">
-                                            <button onClick={() => { navigator.clipboard.writeText(shareUrl); alert("Copied!"); }} className="flex-1 sm:flex-none px-4 py-2 bg-emerald-600 text-white text-[10px] font-bold rounded-lg hover:bg-emerald-700 transition uppercase tracking-wider">Copy</button>
-                                            <button onClick={() => window.open(shareUrl, '_blank')} className="flex-1 sm:flex-none px-4 py-2 bg-slate-800 text-white text-[10px] font-bold rounded-lg hover:bg-slate-950 transition uppercase tracking-wider border border-slate-700">Preview</button>
-                                        </div>
-                                    </div>
-                                </div>
-                            )}
-
                             <button onClick={downloadPhpFile} className="w-full py-3 border-2 border-indigo-600 text-indigo-600 dark:text-indigo-400 font-bold rounded-xl hover:bg-indigo-50 dark:hover:bg-indigo-900/20 transition uppercase text-xs tracking-widest">
                                 📥 Download .php File
                             </button>
