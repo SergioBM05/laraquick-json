@@ -12,6 +12,8 @@
     "@monaco-editor/react": "latest",
     "@tailwindcss/postcss": "^4.2.2",
     "babel-plugin-react-compiler": "^1.0.0",
+    "html2canvas": "^1.4.1",
+    "jszip": "^3.10.1",
     "lucide-react": "latest",
     "next": "latest",
     "react": "latest",
