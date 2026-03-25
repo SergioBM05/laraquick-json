@@ -12,14 +12,17 @@
     "@monaco-editor/react": "latest",
     "@tailwindcss/postcss": "^4.2.2",
     "babel-plugin-react-compiler": "^1.0.0",
+    "file-saver": "^2.0.5",
     "html2canvas": "^1.4.1",
     "jszip": "^3.10.1",
     "lucide-react": "latest",
     "next": "latest",
     "react": "latest",
-    "react-dom": "latest"
+    "react-dom": "latest",
+    "reactflow": "^11.11.4"
   },
   "devDependencies": {
+    "@types/file-saver": "^2.0.7",
     "@types/node": "latest",
     "@types/react": "latest",
     "@types/react-dom": "latest",
