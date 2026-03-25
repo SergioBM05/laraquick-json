@@ -3,7 +3,7 @@
 
 **LaraQuick Architect** is a powerful, web-based tool designed to bridge the gap between database design and Laravel development. Stop writing repetitive migrations and models by hand—design them visually and export a production-ready ZIP in seconds.
 
-🚀 **Live Demo:** [https://laraquicktool.com/](https://laraquicktool.com/)
+🚀 **Live Web:** [https://laraquicktool.com/](https://laraquicktool.com/)
 
 ---
 
@@ -29,11 +29,3 @@
 - **Styling**: Tailwind CSS
 - **Workflow**: React Flow
 - **Utilities**: JSZip, File-Saver, Lucide-React
-
----
-
-## 🚀 Getting Started
-
-1. **Clone the repository**
-   ```bash
-   git clone [https://github.com/YOUR_USERNAME/laraquick-architect.git](https://github.com/YOUR_USERNAME/laraquick-architect.git)
