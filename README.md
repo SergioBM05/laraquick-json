@@ -1,36 +1,39 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# ⚡ LaraQuick Architect
+### Visual Laravel Schema Designer & Boilerplate Generator
 
-## Getting Started
+**LaraQuick Architect** is a powerful, web-based tool designed to bridge the gap between database design and Laravel development. Stop writing repetitive migrations and models by hand—design them visually and export a production-ready ZIP in seconds.
 
-First, run the development server:
+🚀 **Live Demo:** [https://laraquicktool.com/](https://laraquicktool.com/)
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+---
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## ✨ Features
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- **🎨 Visual Node Editor**: Drag-and-drop interface to create and organize your database tables (powered by React Flow).
+- **🔗 Smart Relationships**: 
+    - Connect nodes to establish **1:N** relationships.
+    - Single-click toggle to switch to **N:N (Many-to-Many)**, which automatically generates the required pivot tables following Laravel naming conventions.
+- **📥 SQL Import**: Upload your existing `.sql` files to reverse-engineer your schema into a visual diagram instantly.
+- **📦 Full Project Export**: Download a structured `.zip` file containing:
+    - **Migrations**: Properly ordered with timestamps.
+    - **Models**: Pre-filled with `$fillable` attributes.
+    - **Controllers**: Basic CRUD boilerplate.
+    - **Factories**: Ready-to-use with `fake()` data.
+- **💻 Real-time Preview**: Inspect the generated PHP code for each file before exporting.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+---
 
-## Learn More
+## 🛠️ Tech Stack
 
-To learn more about Next.js, take a look at the following resources:
+- **Frontend**: React.js & TypeScript
+- **Styling**: Tailwind CSS
+- **Workflow**: React Flow
+- **Utilities**: JSZip, File-Saver, Lucide-React
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+---
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 🚀 Getting Started
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+1. **Clone the repository**
+   ```bash
+   git clone [https://github.com/YOUR_USERNAME/laraquick-architect.git](https://github.com/YOUR_USERNAME/laraquick-architect.git)
