@@ -6,7 +6,7 @@ import ReactFlow, {
     Node, Edge, Connection, addEdge, Handle, Position, MarkerType
 } from 'reactflow';
 import 'reactflow/dist/style.css';
-import { Plus, Download, Zap, Settings2, Database, X, Upload, Trash2, Code2, Repeat, FileJson } from 'lucide-react';
+import { Plus, Download, Zap, Settings2, Database, X, Upload, Trash2, Repeat } from 'lucide-react';
 import JSZip from 'jszip';
 import { saveAs } from 'file-saver';
 
@@ -56,7 +56,7 @@ export default function LaraQuickArchitect() {
         setSelectedNodeId(null);
     }, []);
 
-    // Generadores de código para el ZIP
+    // --- GENERADORES DE CÓDIGO ---
     const generateMigration = (node: Node) => `<?php
 use Illuminate\\Database\\Migrations\\Migration;
 use Illuminate\\Database\\Schema\\Blueprint;
@@ -69,29 +69,80 @@ return new class extends Migration {
             $table->timestamps();
         });
     }
+
+    public function down(): void {
+        Schema::dropIfExists('${node.data.label.toLowerCase()}s');
+    }
 };`;
 
     const generateModel = (node: Node) => `<?php
 namespace App\\Models;
+
 use Illuminate\\Database\\Eloquent\\Model;
 use Illuminate\\Database\\Eloquent\\Factories\\HasFactory;
 
 class ${node.data.label} extends Model {
     use HasFactory;
-    protected $fillable = [${node.data.fields.filter((f: any) => f.type !== 'id').map((f: any) => `'${f.name}'`).join(', ')}];
+
+    protected $fillable = [
+        ${node.data.fields.filter((f: any) => f.type !== 'id').map((f: any) => `'${f.name}'`).join(',\n        ')}
+    ];
+}`;
+
+    const generateController = (node: Node) => `<?php
+namespace App\\Http\\Controllers;
+
+use App\\Models\\${node.data.label};
+use Illuminate\\Http\\Request;
+
+class ${node.data.label}Controller extends Controller {
+    public function index() {
+        return ${node.data.label}::all();
+    }
+
+    public function store(Request $request) {
+        return ${node.data.label}::create($request->all());
+    }
+
+    public function show(${node.data.label} $model) {
+        return $model;
+    }
+}`;
+
+    const generateFactory = (node: Node) => `<?php
+namespace Database\\Factories;
+
+use Illuminate\\Database\\Eloquent\\Factories\\Factory;
+
+class ${node.data.label}Factory extends Factory {
+    public function definition(): array {
+        return [
+            ${node.data.fields.filter((f: any) => f.type !== 'id').map((f: any) => `'${f.name}' => fake()->word(),`).join('\n            ')}
+        ];
+    }
 }`;
 
     const exportProject = async () => {
         const zip = new JSZip();
         
-        nodes.forEach(node => {
-            const folder = zip.folder(node.data.label);
-            folder?.file(`${node.data.label}.php`, generateModel(node));
-            folder?.file(`create_${node.data.label.toLowerCase()}s_table.php`, generateMigration(node));
+        // Estructura de carpetas Laravel
+        const modelFolder = zip.folder("app/Models");
+        const controllerFolder = zip.folder("app/Http/Controllers");
+        const migrationFolder = zip.folder("database/migrations");
+        const factoryFolder = zip.folder("database/factories");
+
+        nodes.forEach((node, index) => {
+            const name = node.data.label;
+            const timestamp = new Date().toISOString().replace(/[-:T]/g, '_').split('.')[0];
+            
+            modelFolder?.file(`${name}.php`, generateModel(node));
+            controllerFolder?.file(`${name}Controller.php`, generateController(node));
+            factoryFolder?.file(`${name}Factory.php`, generateFactory(node));
+            migrationFolder?.file(`2024_01_01_${index.toString().padStart(6, '0')}_create_${name.toLowerCase()}s_table.php`, generateMigration(node));
         });
 
         const content = await zip.generateAsync({ type: "blob" });
-        saveAs(content, "laravel-architect-project.zip");
+        saveAs(content, "laravel_architecture_exported.zip");
     };
 
     const onEdgeDoubleClick = useCallback((event: React.MouseEvent, edge: Edge) => {
@@ -371,10 +422,10 @@ class ${node.data.label} extends Model {
                                 </div>
                                 <div className="flex-1 p-6 overflow-auto font-mono text-[10px] leading-relaxed">
                                     <pre className="text-indigo-300 whitespace-pre-wrap">
-                                        {activeTab === 'migration' && `Schema::create('${selectedNode.data.label.toLowerCase()}s', function (Blueprint $table) {\n${selectedNode.data.fields.map((f: any) => `  $table->${f.type === 'id' ? 'id()' : `${f.type}('${f.name}')`}${f.type === 'foreignId' ? '->constrained()' : ''};`).join('\n')}\n  $table->timestamps();\n});`}
-                                        {activeTab === 'model' && `class ${selectedNode.data.label} extends Model {\n  protected $fillable = [${selectedNode.data.fields.filter((f: any) => f.type !== 'id').map((f: any) => `'${f.name}'`).join(', ')}];\n}`}
-                                        {activeTab === 'controller' && `class ${selectedNode.data.label}Controller extends Controller {\n  public function index() { return ${selectedNode.data.label}::all(); }\n}`}
-                                        {activeTab === 'factory' && `public function definition() {\n  return [\n${selectedNode.data.fields.filter((f: any) => f.type !== 'id').map((f: any) => `    '${f.name}' => fake()->word(),`).join('\n')}\n  ];\n}`}
+                                        {activeTab === 'migration' && generateMigration(selectedNode)}
+                                        {activeTab === 'model' && generateModel(selectedNode)}
+                                        {activeTab === 'controller' && generateController(selectedNode)}
+                                        {activeTab === 'factory' && generateFactory(selectedNode)}
                                     </pre>
                                 </div>
                             </div>
