@@ -6,9 +6,9 @@ import ReactFlow, {
     Node, Edge, Connection, addEdge, Handle, Position, MarkerType
 } from 'reactflow';
 import 'reactflow/dist/style.css';
-import { Plus, Download, Zap, Settings2, Database, X, Upload, Trash2, Code2, Repeat } from 'lucide-react';
-import Link from 'next/link';
-
+import { Plus, Download, Zap, Settings2, Database, X, Upload, Trash2, Code2, Repeat, FileJson } from 'lucide-react';
+import JSZip from 'jszip';
+import { saveAs } from 'file-saver';
 
 const ModelNode = ({ data, selected }: any) => {
     return (
@@ -55,6 +55,44 @@ export default function LaraQuickArchitect() {
         setEdges((eds) => eds.filter((e) => e.source !== id && e.target !== id));
         setSelectedNodeId(null);
     }, []);
+
+    // Generadores de código para el ZIP
+    const generateMigration = (node: Node) => `<?php
+use Illuminate\\Database\\Migrations\\Migration;
+use Illuminate\\Database\\Schema\\Blueprint;
+use Illuminate\\Support\\Facades\\Schema;
+
+return new class extends Migration {
+    public function up(): void {
+        Schema::create('${node.data.label.toLowerCase()}s', function (Blueprint $table) {
+            ${node.data.fields.map((f: any) => `$table->${f.type === 'id' ? 'id()' : `${f.type}('${f.name}')`}${f.type === 'foreignId' ? '->constrained()' : ''};`).join('\n            ')}
+            $table->timestamps();
+        });
+    }
+};`;
+
+    const generateModel = (node: Node) => `<?php
+namespace App\\Models;
+use Illuminate\\Database\\Eloquent\\Model;
+use Illuminate\\Database\\Eloquent\\Factories\\HasFactory;
+
+class ${node.data.label} extends Model {
+    use HasFactory;
+    protected $fillable = [${node.data.fields.filter((f: any) => f.type !== 'id').map((f: any) => `'${f.name}'`).join(', ')}];
+}`;
+
+    const exportProject = async () => {
+        const zip = new JSZip();
+        
+        nodes.forEach(node => {
+            const folder = zip.folder(node.data.label);
+            folder?.file(`${node.data.label}.php`, generateModel(node));
+            folder?.file(`create_${node.data.label.toLowerCase()}s_table.php`, generateMigration(node));
+        });
+
+        const content = await zip.generateAsync({ type: "blob" });
+        saveAs(content, "laravel-architect-project.zip");
+    };
 
     const onEdgeDoubleClick = useCallback((event: React.MouseEvent, edge: Edge) => {
         if (clickTimeout.current) {
@@ -169,7 +207,6 @@ export default function LaraQuickArchitect() {
             const newNodes: Node[] = [];
             const newEdges: Edge[] = [];
 
-            // 1. Crear los nodos
             while ((match = tableRegex.exec(content)) !== null) {
                 const tableName = match[1];
                 const lines = match[2].split('\n');
@@ -183,7 +220,6 @@ export default function LaraQuickArchitect() {
                     const colTypeRaw = parts[1]?.toLowerCase() || '';
 
                     let lType = 'string';
-                    // Detección mejorada de tipos y FKs
                     if (colName.includes('id') && (clean.toLowerCase().includes('primary key') || colName === 'id')) {
                         lType = 'id';
                     } else if (colName.includes('id_') || colName.endsWith('_id')) {
@@ -210,13 +246,10 @@ export default function LaraQuickArchitect() {
                 });
             }
 
-            // 2. Relacionar (Detección de FK inteligente)
             newNodes.forEach(targetNode => {
                 targetNode.data.fields.forEach((field: any) => {
                     if (field.type === 'foreignId') {
-                        // Limpia el nombre del campo para buscar la tabla (ej: id_categoria -> categoria)
                         const searchName = field.name.replace('id_', '').replace('_id', '');
-
                         const sourceNode = newNodes.find(n =>
                             n.id.toLowerCase() === searchName ||
                             n.id.toLowerCase() === searchName + 's' ||
@@ -259,6 +292,7 @@ export default function LaraQuickArchitect() {
                     <input type="file" className="hidden" ref={fileInputRef} onChange={handleSqlImport} accept=".sql" />
                     <button onClick={() => fileInputRef.current?.click()} className="px-3 py-2 bg-slate-100 dark:bg-slate-800 text-[10px] font-black uppercase rounded-lg flex items-center gap-2 hover:bg-slate-200 transition-all"><Upload size={14} /> Import SQL</button>
                     <button onClick={() => setNodes(nds => nds.concat({ id: `table_${Date.now()}`, type: 'modelNode', position: { x: 50, y: 50 }, data: { label: 'NewTable', fields: [{ name: 'id', type: 'id' }], id: `table_${Date.now()}`, onDelete: deleteNode } }))} className="px-3 py-2 bg-indigo-600 text-white text-[10px] font-black uppercase rounded-lg flex items-center gap-2 hover:bg-indigo-700 transition-all shadow-lg"><Plus size={14} /> Add Model</button>
+                    <button onClick={exportProject} className="px-3 py-2 bg-amber-500 text-white text-[10px] font-black uppercase rounded-lg flex items-center gap-2 hover:bg-amber-600 transition-all shadow-lg"><Download size={14} /> Export ZIP</button>
                     <button onClick={() => { setEdges([]); setNodes(nds => nds.map(n => ({ ...n, data: { ...n.data, fields: n.data.fields.filter((f: any) => f.type !== 'foreignId') } }))); }} className="px-3 py-2 text-rose-500 text-[10px] font-black uppercase hover:bg-rose-50 rounded-lg">Clear All Relations</button>
                 </div>
             </header>
@@ -356,7 +390,6 @@ export default function LaraQuickArchitect() {
                         </div>
                     )}
                 </aside>
-                
             </div>
         </main>
     );
